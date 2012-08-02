@@ -911,7 +911,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	protected function setUp()
 	{
-		return true;
+		return $this;
 	}
 
 	protected function beforeTestMethod($testMethod)
@@ -926,7 +926,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	protected function tearDown()
 	{
-		return false;
+		return $this;
 	}
 
 	protected function addExceptionToScore(\exception $exception)
@@ -1111,16 +1111,31 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this->callObservers(self::beforeSetUp);
 
-		switch (true)
-		{
-			case $this->setUp():
-				$this->callObservers(self::afterSetUp);
-				return true;
+		$test = $this;
+		$exception = null;
 
-			default:
-				$this->callObservers(self::setUpFail);
-				return false;
+		try
+		{
+			set_error_handler(function($errno, $errstr, $errfile, $errline, $context) use($test, &$exception) {
+				$test->errorHandler($errno, $errstr, $errfile, $errline, $context);
+
+				$exception = $errstr;
+			});
+
+			$this->setUp();
+
+			restore_error_handler();
+
+			$this->callObservers(self::afterSetUp);
 		}
+		catch(\Exception $exception) {}
+
+		if($exception !== null)
+		{
+			$this->callObservers(self::setUpFail);
+		}
+
+		return ($exception === null);
 	}
 
 	private function doTearDown()

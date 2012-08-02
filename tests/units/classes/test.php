@@ -4,6 +4,8 @@ namespace mageekguy\atoum
 {
 	class emptyTest {}
 	class notEmptyTest {}
+	class setUpFailWithExceptionTest {}
+	class setUpFailWithErrorTest {}
 }
 
 namespace mageekguy\atoum\mock\mageekguy\atoum
@@ -56,6 +58,32 @@ namespace mageekguy\atoum\tests\units
 
 			parent::__construct();
 		}
+	}
+
+	class setUpFailWithExceptionTest extends atoum\test
+	{
+		protected function setUp()
+		{
+			throw new \Exception('This is a failling setUp');
+		}
+
+		/**
+		@ignore on
+		 */
+		public function testMethod() {}
+	}
+
+	class setUpFailWithErrorTest extends atoum\test
+	{
+		protected function setUp()
+		{
+			trigger_error('This is a failing setUp', \E_USER_ERROR);
+		}
+
+		/**
+		@ignore on
+		 */
+		public function testMethod() {}
 	}
 
 	class test extends atoum\test
@@ -584,6 +612,31 @@ namespace mageekguy\atoum\tests\units
 							->withArguments(\mageekguy\atoum\test::runStop)->never()
 							->withArguments(\mageekguy\atoum\test::beforeSetUp)->never()
 							->withArguments(\mageekguy\atoum\test::afterSetUp)->never()
+							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
+							->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
+				->if($test = new \mock\mageekguy\atoum\tests\units\setUpFailWithExceptionTest())
+				->then
+					->object($test->run())->isIdenticalTo($test)
+					->mock($test)
+						->call('callObservers')
+							->withArguments(\mageekguy\atoum\test::runStart)->once()
+							->withArguments(\mageekguy\atoum\test::runStop)->once()
+							->withArguments(\mageekguy\atoum\test::beforeSetUp)->once()
+							->withArguments(\mageekguy\atoum\test::setUpFail)->once()
+							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
+							->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
+				->if($test = new \mock\mageekguy\atoum\tests\units\setUpFailWithErrorTest())
+				->and($test->getMockController()->errorHandler = function() {})
+				->then
+					->object($test->run())->isIdenticalTo($test)
+					->mock($test)
+						->call('errorHandler')
+							->withArguments(\E_USER_ERROR, 'This is a failing setUp', __FILE__)->once()
+						->call('callObservers')
+							->withArguments(\mageekguy\atoum\test::runStart)->once()
+							->withArguments(\mageekguy\atoum\test::runStop)->once()
+							->withArguments(\mageekguy\atoum\test::beforeSetUp)->once()
+							->withArguments(\mageekguy\atoum\test::setUpFail)->once()
 							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
 							->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
 			;

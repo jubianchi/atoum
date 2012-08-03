@@ -1128,7 +1128,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 			$this->callObservers(self::afterSetUp);
 		}
-		catch(\Exception $exception) {}
+		catch(\Exception $exception) {
+			$this->addExceptionToScore($exception);
+		}
 
 		if($exception !== null)
 		{

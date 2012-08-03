@@ -636,7 +636,10 @@ namespace mageekguy\atoum\tests\units
 							->withArguments(\mageekguy\atoum\test::setUpFail)->never()
 							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->once()
 							->withArguments(\mageekguy\atoum\test::afterTestMethod)->once()
-				->if($test = new \mock\mageekguy\atoum\tests\units\setUpFailWithExceptionTest())
+				->if($factory = new \mageekguy\atoum\factory())
+				->and($score = new \mock\mageekguy\atoum\test\score())
+				->and($factory['mageekguy\atoum\test\score'] = $score)
+				->and($test = new \mock\mageekguy\atoum\tests\units\setUpFailWithExceptionTest($factory))
 				->then
 					->object($test->run())->isIdenticalTo($test)
 					->mock($test)
@@ -647,6 +650,9 @@ namespace mageekguy\atoum\tests\units
 							->withArguments(\mageekguy\atoum\test::setUpFail)->once()
 							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
 							->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
+					->mock($score)
+						->call('addException')
+							->once()
 				->if($test = new \mock\mageekguy\atoum\tests\units\setUpFailWithErrorTest())
 				->and($test->getMockController()->errorHandler = function() {})
 				->then

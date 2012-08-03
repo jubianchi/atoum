@@ -4,6 +4,7 @@ namespace mageekguy\atoum
 {
 	class emptyTest {}
 	class notEmptyTest {}
+	class setUpEmptyBodyTest {}
 	class setUpFailWithExceptionTest {}
 	class setUpFailWithErrorTest {}
 }
@@ -58,6 +59,16 @@ namespace mageekguy\atoum\tests\units
 
 			parent::__construct();
 		}
+	}
+
+	class setUpEmptyBodyTest extends atoum\test
+	{
+		protected function setUp() {}
+
+		/**
+		@ignore on
+		 */
+		public function testMethod() {}
 	}
 
 	class setUpFailWithExceptionTest extends atoum\test
@@ -614,6 +625,17 @@ namespace mageekguy\atoum\tests\units
 							->withArguments(\mageekguy\atoum\test::afterSetUp)->never()
 							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
 							->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
+				->if($test = new \mock\mageekguy\atoum\tests\units\setUpEmptyBodyTest())
+				->then
+					->object($test->run())->isIdenticalTo($test)
+					->mock($test)
+						->call('callObservers')
+							->withArguments(\mageekguy\atoum\test::runStart)->once()
+							->withArguments(\mageekguy\atoum\test::runStop)->once()
+							->withArguments(\mageekguy\atoum\test::beforeSetUp)->once()
+							->withArguments(\mageekguy\atoum\test::setUpFail)->never()
+							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->once()
+							->withArguments(\mageekguy\atoum\test::afterTestMethod)->once()
 				->if($test = new \mock\mageekguy\atoum\tests\units\setUpFailWithExceptionTest())
 				->then
 					->object($test->run())->isIdenticalTo($test)

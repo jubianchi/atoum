@@ -1,7 +1,20 @@
-script: php ./scripts/runner.php --test-it
 language: php
+secure: "W+yK9GdNDif0eKXicjsWToSEDzIcU6T9x156mrJebbaSgVHOUmaIyMWEeJ8d\nI2gY2KhAIcFG7ToQpddbwxJUlCO9yzTJjgsRZj6/I/hOjuq8cDbd04X2aATE\nLCYt0ssEey+zzhHxa0Ka5OVZ/Xj4gc7kQyEifZnlYbgJruBdTQY="
 php:
   - 5.3
   - 5.4
 notifications:
   irc: "irc.freenode.org##atoum"
+before_script:
+  - [ -n "$COVERALLS_REPO_TOKEN" ] && composer require satooshi/php-coveralls:dev-master
+  - [ -n "$COVERALLS_REPO_TOKEN" ] && cp resources/configurations/runner/clover.php.dist .atoum.php
+  - [ -n "$COVERALLS_REPO_TOKEN" ] && sed -i s?/path/to/destination/directory/atoum.coverage.xml?clover.xml? .atoum.php
+  - |
+    [ -n "$COVERALLS_REPO_TOKEN" ] && cat << 'EOF' > .coveralls.yml
+    src_dir: "./classes"
+    coverage_clover: clover.xml
+    json_path: coveralls-upload.json
+    EOF
+script:
+  - php ./scripts/runner.php --test-it
+  - [ -n "$COVERALLS_REPO_TOKEN" ] && vendor/bin/coveralls -c .coveralls.yml -v

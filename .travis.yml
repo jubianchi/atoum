@@ -6,15 +6,15 @@ php:
 notifications:
   irc: "irc.freenode.org##atoum"
 before_script:
-  - [ -n "$COVERALLS_REPO_TOKEN" ] && composer require satooshi/php-coveralls:dev-master
-  - [ -n "$COVERALLS_REPO_TOKEN" ] && cp resources/configurations/runner/clover.php.dist .atoum.php
-  - [ -n "$COVERALLS_REPO_TOKEN" ] && sed -i s?/path/to/destination/directory/atoum.coverage.xml?clover.xml? .atoum.php
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && composer require satooshi/php-coveralls:dev-master"
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && cp resources/configurations/runner/clover.php.dist .atoum.php"
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s?/path/to/destination/directory/atoum.coverage.xml?clover.xml? .atoum.php"
   - |
-    [ -n "$COVERALLS_REPO_TOKEN" ] && cat << 'EOF' > .coveralls.yml
-    src_dir: "./classes"
-    coverage_clover: clover.xml
-    json_path: coveralls-upload.json
-    EOF
+      [ -n "$COVERALLS_REPO_TOKEN" ] && cat << 'EOF' > .coveralls.yml
+      src_dir: "./classes"
+      coverage_clover: clover.xml
+      json_path: coveralls-upload.json
+      EOF
 script:
   - php ./scripts/runner.php --test-it
-  - [ -n "$COVERALLS_REPO_TOKEN" ] && vendor/bin/coveralls -c .coveralls.yml -v
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && vendor/bin/coveralls -c .coveralls.yml -v"

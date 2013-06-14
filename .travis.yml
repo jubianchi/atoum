@@ -17,6 +17,7 @@ before_script:
       coverage_clover: clover.xml
       json_path: coveralls-upload.json
       EOF
+  - [ -n \"$COVERALLS_REPO_TOKEN\" ] && wget http://getcomposer.org/composer.phar || true"
 script:
   - php ./scripts/runner.php --test-it
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && vendor/bin/coveralls -c .coveralls.yml -v || true"

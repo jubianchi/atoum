@@ -8,16 +8,8 @@ env:
     global:
         - secure: "W+yK9GdNDif0eKXicjsWToSEDzIcU6T9x156mrJebbaSgVHOUmaIyMWEeJ8d\nI2gY2KhAIcFG7ToQpddbwxJUlCO9yzTJjgsRZj6/I/hOjuq8cDbd04X2aATE\nLCYt0ssEey+zzhHxa0Ka5OVZ/Xj4gc7kQyEifZnlYbgJruBdTQY="
 before_script:
-  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && composer require satooshi/php-coveralls:dev-master || true"
-  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && cp resources/configurations/runner/clover.php.dist .atoum.php || true"
-  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s?/path/to/destination/directory/atoum.coverage.xml?clover.xml? .atoum.php || true"
-  - |
-      [ -n "$COVERALLS_REPO_TOKEN" ] && cat << 'EOF' > .coveralls.yml || true
-      src_dir: "./classes"
-      coverage_clover: clover.xml
-      json_path: coveralls-upload.json
-      EOF
-  - [ -n \"$COVERALLS_REPO_TOKEN\" ] && wget http://getcomposer.org/composer.phar || true"
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && cp resources/configurations/runner/coveralls.php.dist .atoum.php || true"
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s?/path/to/sources/directory?classes? .atoum.php || true"
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s/YouCoverallsProjectToken/$COVERALLS_REPO_TOKEN/ .atoum.php || true"
 script:
   - php ./scripts/runner.php --test-it
-  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && vendor/bin/coveralls -c .coveralls.yml -v || true"

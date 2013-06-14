@@ -18,4 +18,4 @@ Publish code coverage report on coveralls.io
 $source = '/path/to/sources/directory';
 $token = 'YouCoverallsProjectToken';
 $coverallsReport = new atoum\reports\asynchronous\coveralls($sources, $token);
-$runner->addReport($coverallsReport);
+$runner->addReport($coverallsReport->addWriter());

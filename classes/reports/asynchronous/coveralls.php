@@ -5,7 +5,8 @@ namespace mageekguy\atoum\reports\asynchronous;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\score
+	mageekguy\atoum\score,
+	mageekguy\atoum\report
 ;
 
 class coveralls extends atoum\reports\asynchronous
@@ -39,6 +40,21 @@ class coveralls extends atoum\reports\asynchronous
 		$this->sourceDir = new atoum\fs\path($sourceDir);
 	}
 
+	public function addWriter(report\writers\asynchronous $writer = null)
+	{
+		$writer = $writer ?: new atoum\writers\http(
+			static::defaultCoverallsUrl,
+			'POST',
+			'json',
+			array(
+				'Content-type' => 'multipart/form-data'
+			),
+			$this->adapter
+		);
+
+		return parent::addWriter($writer);
+	}
+
 	public function getSourceDir()
 	{
 		return $this->sourceDir;
@@ -57,19 +73,6 @@ class coveralls extends atoum\reports\asynchronous
 		{
 			$coverage = $this->makeJson($this->score->getCoverage());
 			$this->string = json_encode($coverage);
-
-			if (sizeof($coverage['source_files']) > 0)
-			{
-				$opts = array(
-					'http' => array(
-						'method'  => 'POST',
-						'header'  => 'Content-type: multipart/form-data',
-						'content' => http_build_query(array('json' => $this->string))
-					)
-				);
-				$context = stream_context_create($opts);
-				$this->adapter->file_get_contents(static::defaultCoverallsUrl, false, $context);
-			}
 		}
 
 		return $this;

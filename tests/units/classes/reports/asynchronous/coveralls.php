@@ -76,13 +76,13 @@ class coveralls extends atoum\test
 			->and($report = new testedClass($sourceDir = uniqid(), $token = '51bb597d202b4', $adapter))
 			->and($score = new \mock\mageekguy\atoum\score())
 			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
-			->and($writer = new \mock\mageekguy\atoum\writers\file())
+			->and($writer = new \mock\mageekguy\atoum\writers\http(uniqid()))
+			->and($writer->getMockController()->writeAsynchronousReport = function() use ($writer) { return $writer; })
 			->then
 				->when(function() use ($report, $writer) {
 						$report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner());
 					})
 					->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
-					->adapter($adapter)->call('file_get_contents')->never()
 			->if($adapter->date = '2013-05-13 10:00:00 +0000')
 			->and($adapter->file_get_contents = '<?php')
 			->and($observable = new \mock\mageekguy\atoum\runner())
@@ -99,10 +99,11 @@ class coveralls extends atoum\test
 				)
 			))
 			->and($report = new testedClass($sourceDir, $token, $adapter))
+			->and($report->addWriter($writer))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
-				->castToString($report)->isEqualToContentsOfFile($filepath)
-				->adapter($adapter)->call('file_get_contents')->never()
+					->castToString($report)->isEqualToContentsOfFile($filepath)
+				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
 			->if($coverage->getMockController()->getClasses = array())
 			->and($classController = new mock\controller())
 			->and($classController->disableMethodChecking())
@@ -153,7 +154,7 @@ class coveralls extends atoum\test
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)
 				->adapter($adapter)
-					->call('file_get_contents')->withArguments(testedClass::defaultCoverallsUrl)->once()
+					->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->twice()
 		;
 	}
 }

@@ -66,8 +66,8 @@ class coveralls extends atoum\test
 					case 'git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'':
 						return '{"id":"7282ea7620b45fcba0f9d3bfd484ab146aba2bd0","author_name":"mageekguy","author_email":"atoum@atoum.org","comitter_name":"mageekguy","comitter_email":"atoum@atoum.org"}';
 
-					case 'git rev-parse --abbrev-ref HEAD':
-						return 'master';
+					case 'git branch --contains':
+						return '* master';
 
 					default:
 						return null;
@@ -102,7 +102,7 @@ class coveralls extends atoum\test
 			->and($report->addWriter($writer))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
-					->castToString($report)->isEqualToContentsOfFile($filepath)
+				->castToString($report)->isEqualToContentsOfFile($filepath)
 				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
 			->if($coverage->getMockController()->getClasses = array())
 			->and($classController = new mock\controller())
@@ -153,8 +153,23 @@ class coveralls extends atoum\test
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)
-				->adapter($adapter)
-					->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->twice()
+				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->twice()
+			->if($adapter->exec = function($command) {
+				switch($command) {
+					case 'git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'':
+						return '{"id":"7282ea7620b45fcba0f9d3bfd484ab146aba2bd0","author_name":"mageekguy","author_email":"atoum@atoum.org","comitter_name":"mageekguy","comitter_email":"atoum@atoum.org"}';
+
+					case 'git branch --contains':
+						return "* (no branch)\n  master\n  " . uniqid();
+
+					default:
+						return null;
+				}
+			})
+			->then
+				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
+				->castToString($report)->isEqualToContentsOfFile($filepath)
+				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->thrice()
 		;
 	}
 }

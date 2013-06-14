@@ -92,12 +92,30 @@ class coveralls extends atoum\reports\asynchronous
 
 	protected function makeGitElement()
 	{
-		$infos = $this->adapter->exec('git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'');
+		$head = $this->adapter->exec('git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'');
+		$branches = explode("\n", $this->adapter->exec('git branch --contains'));
 
-		return array(
-			'head' => json_decode($infos),
-			'branch' => $this->adapter->exec('git rev-parse --abbrev-ref HEAD')
-		);
+		while ($branch = array_shift($branches))
+		{
+			if (strpos($branch, '*') !== false)
+			{
+				if ($branch === '* (no branch)')
+				{
+					$branch = array_shift($branches);
+				}
+
+				break;
+			}
+		}
+
+		$infos = array('head' => json_decode($head));
+
+		if (isset($branch))
+		{
+			$infos['branch'] = trim($branch, '* ');
+		}
+
+		return $infos;
 	}
 
 	protected function makeSourceElement(score\coverage $coverage)

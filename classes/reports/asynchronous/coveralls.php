@@ -12,6 +12,7 @@ class coveralls extends atoum\reports\asynchronous
 {
 	const defaultServiceName = 'atoum';
 	const defaultEvent = 'manual';
+	const defaultCoverallsUrl = 'https://coveralls.io/api/v1/jobs';
 
 	protected $sourceDir = null;
 	protected $repositoryToken = null;
@@ -31,12 +32,16 @@ class coveralls extends atoum\reports\asynchronous
 
 		if ($this->adapter->extension_loaded('json') === false)
 		{
-			throw new exceptions\runtime('libxml PHP extension is mandatory for clover report');
+			throw new exceptions\runtime('JSON PHP extension is mandatory for coveralls report');
 		}
 
 		$this->repositoryToken = $repositoryToken;
 		$this->sourceDir = new atoum\fs\path($sourceDir);
-		$this->sourceDir = $this->sourceDir->resolve();
+	}
+
+	public function getSourceDir()
+	{
+		return $this->sourceDir;
 	}
 
 	public function handleEvent($event, atoum\observable $observable)
@@ -50,18 +55,21 @@ class coveralls extends atoum\reports\asynchronous
 	{
 		if ($event === atoum\runner::runStop)
 		{
-			$this->string = json_encode($this->makeJson($this->score->getCoverage()), defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0);
+			$coverage = $this->makeJson($this->score->getCoverage());
+			$this->string = json_encode($coverage);
 
-			$opts = array(
-				'http' => array(
-					'method'  => 'POST',
-					'header'  => 'Content-type: application/x-www-form-urlencoded',
-					'content' => http_build_query(array('json_file' => $this->string))
-				)
-			);
-			$context  = stream_context_create($opts);
-			$result = file_put_contents('https://coveralls.io/api/v1/jobs', false, $context);
-			var_dump($result);
+			if (sizeof($coverage['source_files']) > 0)
+			{
+				$opts = array(
+					'http' => array(
+						'method'  => 'POST',
+						'header'  => 'Content-type: multipart/form-data',
+						'content' => http_build_query(array('json' => $this->string))
+					)
+				);
+				$context = stream_context_create($opts);
+				$this->adapter->file_get_contents(static::defaultCoverallsUrl, false, $context);
+			}
 		}
 
 		return $this;
@@ -69,16 +77,23 @@ class coveralls extends atoum\reports\asynchronous
 
 	protected function makeJson(score\coverage $coverage)
 	{
-		$now = new \DateTime('now');
-
 		return array(
 			'service_name' => static::defaultServiceName,
 			'service_event_type' => static::defaultEvent,
 			'repo_token' => $this->repositoryToken,
-			'git' => new \StdClass(),
-			'run_at' => $now->format('Y-m-d H:i:s O'),
+			'run_at' => $this->adapter->date('Y-m-d H:i:s O'),
 			'source_files' => $this->makeSourceElement($coverage),
-			'environment' => new \StdClass()
+			'git' => $this->makeGitElement()
+		);
+	}
+
+	protected function makeGitElement()
+	{
+		$infos = $this->adapter->exec('git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'');
+
+		return array(
+			'head' => json_decode($infos),
+			'branch' => $this->adapter->exec('git rev-parse --abbrev-ref HEAD')
 		);
 	}
 
@@ -88,7 +103,7 @@ class coveralls extends atoum\reports\asynchronous
 		foreach ($coverage->getClasses() as $class => $file)
 		{
 			$path = new atoum\fs\path($file);
-			$source = file_get_contents((string) $path->resolve());
+			$source = $this->adapter->file_get_contents((string) $path->resolve());
 
 			$sources[] = array(
 				'name' => ltrim((string) $path->relativizeFrom($this->sourceDir), './'),
@@ -104,25 +119,25 @@ class coveralls extends atoum\reports\asynchronous
 	{
 		$cover = array();
 
-		foreach ($coverage as $lines)
+		foreach($coverage as $method)
 		{
-			if (sizeof($lines) > 0)
+			foreach ($method as $number => $line)
 			{
-				foreach ($lines as $number => $line)
+				if ($number > 1)
 				{
-					for($i = count($cover); $i < $number; $i++)
+					while (count($cover) < ($number - 1))
 					{
 						$cover[] = null;
 					}
+				}
 
-					if ($line === 1)
-					{
-						$cover[] = 1;
-					}
-					else
-					{
-						$cover[] = 0;
-					}
+				if ($line === 1)
+				{
+					$cover[] = 1;
+				}
+				else
+				{
+					$cover[] = 0;
 				}
 			}
 		}

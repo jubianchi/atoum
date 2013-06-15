@@ -20,6 +20,7 @@ class coveralls extends atoum\reports\asynchronous
 	protected $score = null;
 	protected $branchFinder;
 	protected $serviceName;
+	protected $serviceJobId;
 
 	public function __construct($sourceDir, $repositoryToken, atoum\adapter $adapter = null)
 	{
@@ -66,6 +67,18 @@ class coveralls extends atoum\reports\asynchronous
 		return $this->serviceName;
 	}
 
+	public function setServiceJobId($id = null)
+	{
+		$this->serviceJobId = $id;
+
+		return $this;
+	}
+
+	public function getServiceJobId()
+	{
+		return $this->serviceJobId;
+	}
+
 	public function addWriter(report\writers\asynchronous $writer = null)
 	{
 		$writer = $writer ?: new atoum\writers\http(
@@ -107,8 +120,9 @@ class coveralls extends atoum\reports\asynchronous
 	protected function makeJson(score\coverage $coverage)
 	{
 		return array(
-			'service_name' => static::defaultServiceName,
+			'service_name' => $this->serviceName,
 			'service_event_type' => static::defaultEvent,
+			'service_job_id' => $this->serviceJobId,
 			'repo_token' => $this->repositoryToken,
 			'run_at' => $this->adapter->date('Y-m-d H:i:s O'),
 			'source_files' => $this->makeSourceElement($coverage),

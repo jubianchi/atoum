@@ -44,6 +44,7 @@ class coveralls extends atoum\test
 				->castToString($report->getSourceDir())->isEqualTo($sourceDir)
 				->object($report->getBranchFinder())->isInstanceOf('\\Closure')
 				->string($report->getServiceName())->isEqualTo('atoum')
+				->variable($report->getServiceJobId())->isNull()
 			->if($report = new testedClass($sourceDir, $token, $adapter = new atoum\test\adapter()))
 			->then
 				->adapter($report->getAdapter())->call('extension_loaded')->withArguments('json')->once()
@@ -81,6 +82,19 @@ class coveralls extends atoum\test
 			->then
 				->object($report->setServiceName($service))->isIdenticalTo($report)
 				->string($report->getServiceName())->isEqualTo($service)
+		;
+	}
+
+	public function testGetSetServiceJobId()
+	{
+		$this
+			->if($report = new testedClass(uniqid(), uniqid()))
+			->then
+				->variable($report->getServiceJobId())->isNull()
+			->if($service = uniqid())
+			->then
+				->object($report->setServiceJobId($service))->isIdenticalTo($report)
+				->string($report->getServiceJobId())->isEqualTo($service)
 		;
 	}
 

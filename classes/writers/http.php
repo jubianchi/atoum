@@ -57,5 +57,4 @@ class http extends atoum\writer implements writers\asynchronous
 	{
 		return $this;
 	}
-
 }

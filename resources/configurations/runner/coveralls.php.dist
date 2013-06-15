@@ -5,7 +5,10 @@ Sample atoum configuration file to publish code coverage report on coveralls.io.
 Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/runner.php -c path/to/this/file -f path/to/test/file" to use it.
 */
 
-use \mageekguy\atoum;
+use
+    \mageekguy\atoum,
+    \mageekguy\atoum\reports
+;
 
 /*
 This will ad the default CLI report
@@ -17,20 +20,24 @@ Publish code coverage report on coveralls.io
 */
 $source = '/path/to/sources/directory';
 $token = 'YouCoverallsProjectToken';
-$coverallsReport = new atoum\reports\asynchronous\coveralls($sources, $token);
+$coverallsReport = new reports\asynchronous\coveralls($sources, $token);
 
 /*
-If you are using Travis-CI, you should customize the branch finder
+If you are using Travis-CI (or any other CI tool), you should customize the report
 http://about.travis-ci.org/docs/user/ci-environment/#Environment-variables
 */
 $defaultFinder = $coverallsReport->getBranchFinder();
-$coverallsReport->setBranchFinder(function() use ($defaultFinder) {
-	if (($branch = getenv('TRAVIS_BRANCH')) === false)
-	{
-		$branch = $defaultFinder();
-	}
+$coverallsReport
+	->setBranchFinder(function() use ($defaultFinder) {
+		if (($branch = getenv('TRAVIS_BRANCH')) === false)
+		{
+			$branch = $defaultFinder();
+		}
 
-	return $branch;
-});
+		return $branch;
+	})
+	->setServiceName(getenv('TRAVIS') ? 'travis' : null)
+	->addWriter()
+;
 
-$runner->addReport($coverallsReport->addWriter());
+$runner->addReport($coverallsReport);

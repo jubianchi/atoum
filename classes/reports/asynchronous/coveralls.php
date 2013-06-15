@@ -19,6 +19,7 @@ class coveralls extends atoum\reports\asynchronous
 	protected $repositoryToken = null;
 	protected $score = null;
 	protected $branchFinder;
+	protected $serviceName;
 
 	public function __construct($sourceDir, $repositoryToken, atoum\adapter $adapter = null)
 	{
@@ -27,6 +28,7 @@ class coveralls extends atoum\reports\asynchronous
 		$this
 			->setAdapter($adapter)
 			->setBranchFinder()
+			->setServiceName()
 		;
 
 		if ($this->adapter->extension_loaded('json') === false)
@@ -50,6 +52,18 @@ class coveralls extends atoum\reports\asynchronous
 	public function getBranchFinder()
 	{
 		return $this->branchFinder;
+	}
+
+	public function setServiceName($name = null)
+	{
+		$this->serviceName = $name ?: static::defaultServiceName;
+
+		return $this;
+	}
+
+	public function getServiceName()
+	{
+		return $this->serviceName;
 	}
 
 	public function addWriter(report\writers\asynchronous $writer = null)

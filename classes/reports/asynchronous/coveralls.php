@@ -18,18 +18,16 @@ class coveralls extends atoum\reports\asynchronous
 	protected $sourceDir = null;
 	protected $repositoryToken = null;
 	protected $score = null;
-	protected $loc = 0;
-	protected $coveredLoc = 0;
-	protected $methods = 0;
-	protected $coveredMethods = 0;
-	protected $classes = 0;
-	protected $package = '';
+	protected $branchFinder;
 
 	public function __construct($sourceDir, $repositoryToken, atoum\adapter $adapter = null)
 	{
 		parent::__construct();
 
-		$this->setAdapter($adapter);
+		$this
+			->setAdapter($adapter)
+			->setBranchFinder()
+		;
 
 		if ($this->adapter->extension_loaded('json') === false)
 		{
@@ -38,6 +36,20 @@ class coveralls extends atoum\reports\asynchronous
 
 		$this->repositoryToken = $repositoryToken;
 		$this->sourceDir = new atoum\fs\path($sourceDir);
+	}
+
+	public function setBranchFinder(\closure $finder = null)
+	{
+		$adapter = $this->adapter;
+
+		$this->branchFinder = $finder ?: function() use ($adapter) { return $adapter->exec('git rev-parse --abbrev-ref HEAD'); };
+
+		return $this;
+	}
+
+	public function getBranchFinder()
+	{
+		return $this->branchFinder;
 	}
 
 	public function addWriter(report\writers\asynchronous $writer = null)
@@ -93,23 +105,9 @@ class coveralls extends atoum\reports\asynchronous
 	protected function makeGitElement()
 	{
 		$head = $this->adapter->exec('git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'');
-		$branches = explode("\n", $this->adapter->exec('git branch --contains'));
-
-		while ($branch = array_shift($branches))
-		{
-			if (strpos($branch, '*') !== false)
-			{
-				if ($branch === '* (no branch)')
-				{
-					$branch = array_shift($branches);
-				}
-
-				break;
-			}
-		}
-
 		$infos = array('head' => json_decode($head));
 
+		$branch = call_user_func($this->getBranchFinder());
 		if (isset($branch))
 		{
 			$infos['branch'] = trim($branch, '* ');

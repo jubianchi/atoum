@@ -42,6 +42,7 @@ class coveralls extends atoum\test
 				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->array($report->getFields())->isEmpty()
 				->castToString($report->getSourceDir())->isEqualTo($sourceDir)
+				->object($report->getBranchFinder())->isInstanceOf('\\Closure')
 			->if($report = new testedClass($sourceDir, $token, $adapter = new atoum\test\adapter()))
 			->then
 				->adapter($report->getAdapter())->call('extension_loaded')->withArguments('json')->once()
@@ -56,6 +57,19 @@ class coveralls extends atoum\test
 		;
 	}
 
+	public function testGetSetBranchFinder()
+	{
+		$this
+			->if($report = new testedClass($sourceDir = uniqid(), $token = uniqid()))
+			->then
+				->object($report->getBranchFinder())->isInstanceOf('\\Closure')
+			->if($finder = function() {})
+			->then
+				->object($report->setBranchFinder($finder))->isIdenticalTo($report)
+				->object($report->getBranchFinder())->isIdenticalTo($finder)
+		;
+	}
+
 	public function testHandleEvent()
 	{
 		$this
@@ -66,8 +80,8 @@ class coveralls extends atoum\test
 					case 'git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'':
 						return '{"id":"7282ea7620b45fcba0f9d3bfd484ab146aba2bd0","author_name":"mageekguy","author_email":"atoum@atoum.org","comitter_name":"mageekguy","comitter_email":"atoum@atoum.org"}';
 
-					case 'git branch --contains':
-						return '* master';
+					case 'git rev-parse --abbrev-ref HEAD':
+						return 'master';
 
 					default:
 						return null;
@@ -154,18 +168,17 @@ class coveralls extends atoum\test
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)
 				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->twice()
-			->if($adapter->exec = function($command) {
-				switch($command) {
-					case 'git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'':
-						return '{"id":"7282ea7620b45fcba0f9d3bfd484ab146aba2bd0","author_name":"mageekguy","author_email":"atoum@atoum.org","comitter_name":"mageekguy","comitter_email":"atoum@atoum.org"}';
-
-					case 'git branch --contains':
-						return "* (no branch)\n  master\n  " . uniqid();
-
-					default:
-						return null;
-				}
-			})
+			->if($finder = function() use (& $branch) { return 'feature'; })
+			->and($report->setBranchFinder($finder))
+			->and($filepath = join(
+				DIRECTORY_SEPARATOR,
+				array(
+					__DIR__,
+					'coveralls',
+					'resources',
+					'3.json'
+				)
+			))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)

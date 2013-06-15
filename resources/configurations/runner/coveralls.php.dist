@@ -18,4 +18,19 @@ Publish code coverage report on coveralls.io
 $source = '/path/to/sources/directory';
 $token = 'YouCoverallsProjectToken';
 $coverallsReport = new atoum\reports\asynchronous\coveralls($sources, $token);
+
+/*
+If you are using Travis-CI, you should customize the branch finder
+http://about.travis-ci.org/docs/user/ci-environment/#Environment-variables
+*/
+$defaultFinder = $coverallsReport->getBranchFinder();
+$coverallsReport->setBranchFinder(function() use ($defaultFinder) {
+	if (($branch = getenv('TRAVIS_BRANCH')) === false)
+	{
+		$branch = $defaultFinder();
+	}
+
+	return $branch;
+});
+
 $runner->addReport($coverallsReport->addWriter());

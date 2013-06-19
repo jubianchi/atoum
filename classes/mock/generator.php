@@ -359,7 +359,7 @@ class generator
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
-			self::generateMockControllerMethods() .
+			static::generateMockControllerMethods() .
 			$this->generateClassMethodCode($class) .
 			'}' . PHP_EOL .
 			'}'
@@ -450,7 +450,7 @@ class generator
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' implements \\' . ($addIteratorAggregate === false ? '' : 'iteratorAggregate, \\') . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
-			self::generateMockControllerMethods() .
+			static::generateMockControllerMethods() .
 			$this->generateInterfaceMethodCode($class, $addIteratorAggregate) .
 			'}' . PHP_EOL .
 			'}'
@@ -617,7 +617,7 @@ class generator
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
-			self::generateMockControllerMethods() .
+			static::generateMockControllerMethods() .
 			self::generateDefaultConstructor(true) .
 			"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
 			"\t" . '{' . PHP_EOL .

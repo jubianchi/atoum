@@ -903,8 +903,6 @@ class generator extends atoum\test
 					$this->getMockControllerMethods() .
 					"\t" . 'public static function ' . $methodName . '()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
-					"\t\t" . 'return call_user_func_array(array(\'parent\', \'' . $methodName . '\'), $arguments);' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
@@ -938,8 +936,6 @@ class generator extends atoum\test
 					$this->getMockControllerMethods() .
 					"\t" . 'public static function ' . $methodName . '()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
-					"\t\t" . 'return call_user_func_array(array(\'parent\', \'' . $methodName . '\'), $arguments);' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public function getIterator()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .

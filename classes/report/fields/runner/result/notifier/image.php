@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\report\fields\runner\result\notifier
 ;
 
-abstract class image extends notifier
+abstract class image extends cli
 {
 	protected $directory = null;
 	protected $successImage = null;
@@ -62,7 +62,7 @@ abstract class image extends notifier
 		return $image;
 	}
 
-	public function send($title, $message, $success)
+	protected function send($title, $message, $success)
 	{
 		return parent::send($title, $message, $this->getImage($success));
 	}

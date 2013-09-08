@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result\notifier;
+namespace mageekguy\atoum\report\fields\runner\result\notifier\cli;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\report\fields\runner\result\notifier
+	mageekguy\atoum\report\fields\runner\result\notifier\cli
 ;
 
-class terminal extends notifier
+class terminal extends cli
 {
 	protected $callbackCommand = null;
 
@@ -23,7 +23,7 @@ class terminal extends notifier
 		return $this;
 	}
 
-	public function send($title, $message, $success)
+	protected function send($title, $message, $success)
 	{
 		return $this->adapter->system(sprintf($this->getCommand(), escapeshellarg($title), escapeshellarg($message), escapeshellarg($this->callbackCommand)));
 	}

@@ -11,13 +11,6 @@ abstract class notifier extends result
 {
 	protected $adapter = null;
 
-	public function __construct(atoum\adapter $adapter = null)
-	{
-		parent::__construct();
-
-		$this->setAdapter($adapter);
-	}
-
 	public function __toString()
 	{
 		$string = $this->notify();
@@ -59,27 +52,5 @@ abstract class notifier extends result
 		return $this->send($title, $message, $success);
 	}
 
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
-
-	public function send($title, $message, $success)
-	{
-		return $this->adapter->system(sprintf(
-			$this->getCommand(),
-			escapeshellarg($title),
-			escapeshellarg($message),
-			escapeshellarg($success)
-		));
-	}
-
-	protected abstract function getCommand();
+	abstract protected function send($title, $message, $success);
 }

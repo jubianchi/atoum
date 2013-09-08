@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier;
+namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier\cli;
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\locale,
 	mageekguy\atoum\test\adapter,
-	mageekguy\atoum\report\fields\runner\result\notifier\terminal as testedClass
+	mageekguy\atoum\report\fields\runner\result\notifier\cli\terminal as testedClass
 ;
 
-require_once __DIR__ . '/../../../../../runner.php';
+require_once __DIR__ . '/../../../../../../runner.php';
 
 class terminal extends atoum\test
 {
@@ -17,7 +17,7 @@ class terminal extends atoum\test
 	{
 		$this
 			->testedClass
-				->extends('mageekguy\atoum\report\fields\runner\result\notifier')
+				->extends('mageekguy\atoum\report\fields\runner\result\notifier\cli')
 		;
 	}
 

@@ -19,8 +19,8 @@ class autoloader
 
 	private $cacheUsed = false;
 
-	private static $cacheFile = null;
-	private static $registeredAutoloaders = null;
+	protected static $cacheFile = null;
+    protected static $registeredAutoloaders = null;
 
 	public function __construct(array $namespaces = array(), array $namespaceAliases = array(), $classAliases = array())
 	{
@@ -66,7 +66,7 @@ class autoloader
 
 	public function unregister()
 	{
-		if (spl_autoload_unregister(array($this, 'getClass')) === false)
+		if (spl_autoload_unregister(array($this, 'requireClass')) === false)
 		{
 			throw new \runtimeException('Unable to unregister');
 		}
@@ -75,6 +75,11 @@ class autoloader
 
 		return $this;
 	}
+
+    public function isRegistered()
+    {
+        return in_array(array($this, 'requireClass'), spl_autoload_functions());
+    }
 
 	public function addDirectory($namespace, $directory, $suffix = self::defaultFileSuffix)
 	{

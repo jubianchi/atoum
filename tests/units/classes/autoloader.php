@@ -152,4 +152,16 @@ class autoloader extends atoum\test
 				->string($autoloader->getCacheFileForInstance())->isEqualTo($path)
 		;
 	}
+
+    public function testRegister()
+    {
+        $this
+            ->if($autoloader = new testedClass())
+            ->then
+                ->object($autoloader->register())->isIdenticalTo($autoloader)
+                ->boolean($autoloader->isRegistered())->isTrue()
+                ->object($autoloader->unregister())->isIdenticalTo($autoloader)
+                ->boolean($autoloader->isRegistered())->isFalse()
+        ;
+    }
 }

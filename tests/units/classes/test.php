@@ -108,6 +108,9 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getMandatoryClassExtensions())->isEmpty()
 					->array($test->getMandatoryMethodExtensions())->isEmpty()
 					->variable($test->getXdebugConfig())->isNull()
+					->boolean($test->instrumentationIsEnabled())->isFalse()
+					->boolean($test->moleInstrumentationIsEnabled())->isTrue()
+					->boolean($test->coverageInstrumentationIsEnabled())->isTrue()
 			;
 		}
 
@@ -165,6 +168,90 @@ namespace mageekguy\atoum\tests\units
 				->then
 					->object($test->disableDebugMode())->isIdenticalTo($test)
 					->boolean($test->debugModeIsEnabled())->isFalse()
+			;
+		}
+
+		public function testEnableInstrumentation()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->enableInstrumentation())->isIdenticalTo($test)
+					->boolean($test->instrumentationIsEnabled())->isTrue()
+					->object($test->enableInstrumentation())->isIdenticalTo($test)
+					->boolean($test->instrumentationIsEnabled())->isTrue()
+			;
+		}
+
+		public function testDisableInstrumentation()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->disableInstrumentation())->isIdenticalTo($test)
+					->boolean($test->instrumentationIsEnabled())->isFalse()
+					->object($test->disableInstrumentation())->isIdenticalTo($test)
+					->boolean($test->instrumentationIsEnabled())->isFalse()
+				->if($test->enableInstrumentation())
+				->then
+					->object($test->disableInstrumentation())->isIdenticalTo($test)
+					->boolean($test->instrumentationIsEnabled())->isFalse()
+			;
+		}
+
+		public function testEnableMoleInstrumentation()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->enableMoleInstrumentation())->isIdenticalTo($test)
+					->boolean($test->moleInstrumentationIsEnabled())->isTrue()
+					->object($test->enableMoleInstrumentation())->isIdenticalTo($test)
+					->boolean($test->moleInstrumentationIsEnabled())->isTrue()
+			;
+		}
+
+		public function testDisableMoleInstrumentation()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->disableMoleInstrumentation())->isIdenticalTo($test)
+					->boolean($test->moleInstrumentationIsEnabled())->isFalse()
+					->object($test->disableMoleInstrumentation())->isIdenticalTo($test)
+					->boolean($test->moleInstrumentationIsEnabled())->isFalse()
+				->if($test->enableMoleInstrumentation())
+				->then
+					->object($test->disableMoleInstrumentation())->isIdenticalTo($test)
+					->boolean($test->moleInstrumentationIsEnabled())->isFalse()
+			;
+		}
+
+		public function testEnableCoverageInstrumentation()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->enableCoverageInstrumentation())->isIdenticalTo($test)
+					->boolean($test->coverageInstrumentationIsEnabled())->isTrue()
+					->object($test->enableCoverageInstrumentation())->isIdenticalTo($test)
+					->boolean($test->coverageInstrumentationIsEnabled())->isTrue()
+			;
+		}
+
+		public function testDisableCoverageInstrumentation()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->disableCoverageInstrumentation())->isIdenticalTo($test)
+					->boolean($test->coverageInstrumentationIsEnabled())->isFalse()
+					->object($test->disableCoverageInstrumentation())->isIdenticalTo($test)
+					->boolean($test->coverageInstrumentationIsEnabled())->isFalse()
+				->if($test->enableCoverageInstrumentation())
+				->then
+					->object($test->disableCoverageInstrumentation())->isIdenticalTo($test)
+					->boolean($test->coverageInstrumentationIsEnabled())->isFalse()
 			;
 		}
 

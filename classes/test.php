@@ -71,6 +71,9 @@ abstract class test implements observable, \countable
 	private $executeOnFailure = array();
 	private $ignore = false;
 	private $debugMode = false;
+	private $instrumentation = false;
+	private $moleInstrumentation = true;
+	private $coverageInstrumentation = true;
 	private $xdebugConfig = null;
 	private $codeCoverage = false;
 	private $classHasNotVoidMethods = false;
@@ -558,6 +561,63 @@ abstract class test implements observable, \countable
 		return $this->debugMode;
 	}
 
+	public function enableInstrumentation()
+	{
+		$this->instrumentation = true;
+
+		return $this;
+	}
+
+	public function disableInstrumentation()
+	{
+		$this->instrumentation = false;
+
+		return $this;
+	}
+
+	public function instrumentationIsEnabled()
+	{
+		return $this->instrumentation;
+	}
+
+	public function enableMoleInstrumentation()
+	{
+		$this->moleInstrumentation = true;
+
+		return $this;
+	}
+
+	public function disableMoleInstrumentation()
+	{
+		$this->moleInstrumentation = false;
+
+		return $this;
+	}
+
+	public function moleInstrumentationIsEnabled()
+	{
+		return $this->moleInstrumentation;
+	}
+
+	public function enableCoverageInstrumentation()
+	{
+		$this->coverageInstrumentation = true;
+
+		return $this;
+	}
+
+	public function disableCoverageInstrumentation()
+	{
+		$this->coverageInstrumentation = false;
+
+		return $this;
+	}
+
+	public function coverageInstrumentationIsEnabled()
+	{
+		return $this->coverageInstrumentation;
+	}
+
 	public function setXdebugConfig($value)
 	{
 		$this->xdebugConfig = $value;
@@ -1040,7 +1100,8 @@ abstract class test implements observable, \countable
 					}
 					else
 					{
-						$data = $this->{$this->dataProviders[$testMethod]}();
+						$method = $this->dataProviders[$testMethod];
+						$data = $this->$method();
 
 						if (is_array($data) === false && $data instanceof \traversable === false)
 						{

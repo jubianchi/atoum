@@ -31,6 +31,9 @@ class runner implements observable
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
+	protected $instrumentation = false;
+	protected $moleInstrumentation = true;
+	protected $coverageInstrumentation = true;
 	protected $php = null;
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
@@ -296,7 +299,7 @@ class runner implements observable
 
 			if ($test->isIgnored($namespaces, $tags) === false)
 			{
-				$methods =  $test->runTestMethods($testMethods, $tags);
+				$methods = $test->runTestMethods($testMethods, $tags);
 
 				if ($methods)
 				{
@@ -330,6 +333,63 @@ class runner implements observable
 	public function codeCoverageIsEnabled()
 	{
 		return $this->codeCoverage;
+	}
+
+	public function enableInstrumentation()
+	{
+		$this->instrumentation = true;
+
+		return $this;
+	}
+
+	public function disableInstrumentation()
+	{
+		$this->instrumentation = false;
+
+		return $this;
+	}
+
+	public function instrumentationIsEnabled()
+	{
+		return $this->instrumentation;
+	}
+
+	public function enableMoleInstrumentation()
+	{
+		$this->moleInstrumentation = true;
+
+		return $this;
+	}
+
+	public function disableMoleInstrumentation()
+	{
+		$this->moleInstrumentation = false;
+
+		return $this;
+	}
+
+	public function moleInstrumentationIsEnabled()
+	{
+		return $this->moleInstrumentation;
+	}
+
+	public function enableCoverageInstrumentation()
+	{
+		$this->coverageInstrumentation = true;
+
+		return $this;
+	}
+
+	public function disableCoverageInstrumentation()
+	{
+		$this->coverageInstrumentation = false;
+
+		return $this;
+	}
+
+	public function coverageInstrumentationIsEnabled()
+	{
+		return $this->coverageInstrumentation;
 	}
 
 	public function addObserver(atoum\observer $observer)
@@ -392,6 +452,25 @@ class runner implements observable
 
 	public function run(array $namespaces = array(), array $tags = array(), array $runTestClasses = array(), array $runTestMethods = array(), $testBaseClass = null)
 	{
+		if ($this->instrumentationIsEnabled() === true)
+		{
+			atoum\instrumentation\stream::set();
+
+			$instrumentation = new atoum\instrumentation\autoloader\decorator();
+
+			if ($this->moleInstrumentation === false)
+			{
+				$instrumentation->disableMoleInstrumentation();
+			}
+
+			if ($this->coverageInstrumentation === false)
+			{
+				$instrumentation->disableMoleInstrumentation();
+			}
+
+			atoum\autoloader::get()->addDecorator($instrumentation);
+		}
+
 		$this->includeTestPaths();
 
 		$this->testNumber = 0;
@@ -452,6 +531,21 @@ class runner implements observable
 					if ($this->debugMode === true)
 					{
 						$test->enableDebugMode();
+					}
+
+					if ($this->instrumentationIsEnabled() === true)
+					{
+						$test->enableInstrumentation();
+
+						if ($this->moleInstrumentationIsEnabled() === false)
+						{
+							$test->disableMoleInstrumentation();
+						}
+
+						if ($this->coverageInstrumentationIsEnabled() === false)
+						{
+							$test->disableCoverageInstrumentation();
+						}
 					}
 
 					$test->setXdebugConfig($this->xdebugConfig);

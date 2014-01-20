@@ -69,6 +69,26 @@ class concurrent extends test\engine
 				'require \'' . atoum\directory . '/classes/autoloader.php\';'
 			;
 
+			if ($this->test->instrumentationIsEnabled() === true)
+			{
+				$phpCode .=
+					'mageekguy\atoum\instrumentation\stream::set();' .
+					'$instrumentation = new mageekguy\atoum\instrumentation\autoloader\decorator();'
+				;
+
+				if ($this->test->moleInstrumentationIsEnabled() === false)
+				{
+					$phpCode .= '$instrumentation->disableMoleInstrumentation();';
+				}
+
+				if ($this->test->coverageInstrumentationIsEnabled() === false)
+				{
+					$phpCode .= '$instrumentation->disableCoverageInstrumentation();';
+				}
+
+				$phpCode .= 'mageekguy\atoum\autoloader::get()->addDecorator($instrumentation);';
+			}
+
 			$bootstrapFile = $this->test->getBootstrapFile();
 
 			if ($bootstrapFile !== null)
@@ -88,6 +108,21 @@ class concurrent extends test\engine
 				'$test->setPhpPath(\'' . $phpPath . '\');'
 			;
 
+			if ($this->test->instrumentationIsEnabled() === true)
+			{
+				$phpCode .= '$test->enableInstrumentation();';
+
+				if ($this->test->moleInstrumentationIsEnabled() === false)
+				{
+					$phpCode .= '$test->disableMoleInstrumentation();';
+				}
+
+				if ($this->test->coverageInstrumentationIsEnabled() === false)
+				{
+					$phpCode .= '$test->disableCoverageInstrumentation();';
+				}
+			}
+			
 			if ($this->test->debugModeIsEnabled() === true)
 			{
 				$phpCode .= '$test->enableDebugMode();';

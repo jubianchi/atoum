@@ -48,6 +48,9 @@ class runner extends atoum\test
 				->array($runner->getObservers())->isEmpty()
 				->array($runner->getTestPaths())->isEmpty()
 				->variable($runner->getXdebugConfig())->isNull()
+				->boolean($runner->instrumentationIsEnabled())->isFalse()
+				->boolean($runner->moleInstrumentationIsEnabled())->isTrue()
+				->boolean($runner->coverageInstrumentationIsEnabled())->isTrue()
 		;
 	}
 
@@ -174,6 +177,90 @@ class runner extends atoum\test
 			->then
 				->object($runner->disableDebugMode())->isIdenticalTo($runner)
 				->boolean($runner->debugModeIsEnabled())->isFalse()
+		;
+	}
+
+	public function testEnableInstrumentation()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->enableInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->instrumentationIsEnabled())->isTrue()
+				->object($runner->enableInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->instrumentationIsEnabled())->isTrue()
+		;
+	}
+
+	public function testDisableInstrumentation()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->disableInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->instrumentationIsEnabled())->isFalse()
+				->object($runner->disableInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->instrumentationIsEnabled())->isFalse()
+			->if($runner->enableInstrumentation())
+			->then
+				->object($runner->disableInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->instrumentationIsEnabled())->isFalse()
+		;
+	}
+
+	public function testEnableMoleInstrumentation()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->enableMoleInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->moleInstrumentationIsEnabled())->isTrue()
+				->object($runner->enableMoleInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->moleInstrumentationIsEnabled())->isTrue()
+		;
+	}
+
+	public function testDisableMoleInstrumentation()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->disableMoleInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->moleInstrumentationIsEnabled())->isFalse()
+				->object($runner->disableMoleInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->moleInstrumentationIsEnabled())->isFalse()
+			->if($runner->enableMoleInstrumentation())
+			->then
+				->object($runner->disableMoleInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->moleInstrumentationIsEnabled())->isFalse()
+		;
+	}
+
+	public function testEnableCoverageInstrumentation()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->enableCoverageInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->coverageInstrumentationIsEnabled())->isTrue()
+				->object($runner->enableCoverageInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->coverageInstrumentationIsEnabled())->isTrue()
+		;
+	}
+
+	public function testDisableCoverageInstrumentation()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->disableCoverageInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->coverageInstrumentationIsEnabled())->isFalse()
+				->object($runner->disableCoverageInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->coverageInstrumentationIsEnabled())->isFalse()
+			->if($runner->enableCoverageInstrumentation())
+			->then
+				->object($runner->disableCoverageInstrumentation())->isIdenticalTo($runner)
+				->boolean($runner->coverageInstrumentationIsEnabled())->isFalse()
 		;
 	}
 

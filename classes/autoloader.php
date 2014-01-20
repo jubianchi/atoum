@@ -14,13 +14,14 @@ class autoloader
 	protected $classAliases = array();
 	protected $namespaceAliases = array();
 	protected $cacheFileInstance = null;
+	protected $decorators = array();
 
 	protected static $autoloader = null;
 
 	private $cacheUsed = false;
 
 	protected static $cacheFile = null;
-    protected static $registeredAutoloaders = null;
+	protected static $registeredAutoloaders = null;
 
 	public function __construct(array $namespaces = array(), array $namespaceAliases = array(), $classAliases = array())
 	{
@@ -76,10 +77,10 @@ class autoloader
 		return $this;
 	}
 
-    public function isRegistered()
-    {
-        return in_array(array($this, 'requireClass'), spl_autoload_functions());
-    }
+	public function isRegistered()
+	{
+		return in_array(array($this, 'requireClass'), spl_autoload_functions());
+	}
 
 	public function addDirectory($namespace, $directory, $suffix = self::defaultFileSuffix)
 	{
@@ -193,6 +194,11 @@ class autoloader
 			}
 		}
 
+		foreach ($this->decorators as $decorator)
+		{
+			$path = $decorator->decorate($path);
+		}
+
 		return $path;
 	}
 
@@ -228,6 +234,18 @@ class autoloader
 	public function getCacheFileForInstance()
 	{
 		return ($this->cacheFileInstance ?: static::getCacheFile());
+	}
+
+	public function addDecorator(autoloader\decorator $decorator)
+	{
+		$this->decorators[] = $decorator;
+
+		return $this;
+	}
+
+	public function getDecorators()
+	{
+		return $this->decorators;
 	}
 
 	public static function set()

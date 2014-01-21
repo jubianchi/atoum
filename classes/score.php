@@ -32,7 +32,7 @@ class score
 
 	public function setCoverage(score\coverage $coverage = null)
 	{
-		$this->coverage = $coverage ?: new score\coverage();
+		$this->coverage = $coverage ?: new atoum\score\coverage\xdebug();
 
 		return $this;
 	}
@@ -491,7 +491,7 @@ class score
 				{
 					return strcmp($a['file'], $b['file']);
 				}
-				else if ($a['line'] === $b['line'])
+				elseif ($a['line'] === $b['line'])
 				{
 					return 0;
 				}

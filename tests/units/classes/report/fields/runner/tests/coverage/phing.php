@@ -151,7 +151,7 @@ class phing extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($scoreCoverage = new score\coverage())
+			->if($scoreCoverage = new score\coverage\xdebug())
 			->and($score = new \mock\mageekguy\atoum\runner\score())
 			->and($score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; })
 			->and($runner = new atoum\runner())
@@ -198,7 +198,7 @@ class phing extends atoum\test
 			->and($className = uniqid())
 			->and($methodName = uniqid())
 			->and($scoreCoverage->setReflectionClassFactory(function() use ($class) { return $class; }))
-			->and($scoreCoverage->addXdebugDataForTest($this, $xdebugData = array(
+			->and($scoreCoverage->addDataForTest($this, $xdebugData = array(
 						  ($classFile = uniqid()) =>
 							 array(
 								5 => 1,

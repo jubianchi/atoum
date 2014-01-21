@@ -120,7 +120,7 @@ class coveralls extends atoum\test
 			})
 			->and($report = new testedClass($sourceDir = uniqid(), $token = '51bb597d202b4', $adapter))
 			->and($score = new \mock\mageekguy\atoum\score())
-			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
+			->and($coverage = new \mock\mageekguy\atoum\score\coverage\xdebug())
 			->and($writer = new \mock\mageekguy\atoum\writers\http())
 			->and($writer->getMockController()->writeAsynchronousReport = function() use ($writer) { return $writer; })
 			->then
@@ -194,7 +194,7 @@ class coveralls extends atoum\test
 				)
 			))
 			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
-			->and($coverage->addXdebugDataForTest($this, $xdebugData))
+			->and($coverage->addDataForTest($this, $xdebugData))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)

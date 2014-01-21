@@ -8,7 +8,8 @@ use
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\annotations
+	mageekguy\atoum\annotations,
+	mageekguy\atoum\instrumentation
 ;
 
 abstract class test implements observable, \countable
@@ -1147,8 +1148,13 @@ abstract class test implements observable, \countable
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
-						$this->score->getCoverage()->addXdebugDataForTest($this, xdebug_get_code_coverage());
+						$this->score->getCoverage()->addDataForTest($this, xdebug_get_code_coverage());
 						xdebug_stop_code_coverage();
+					}
+
+					if ($this->instrumentationIsEnabled() === true && $this->coverageInstrumentationIsEnabled() === true)
+					{
+						$this->score->getCoverage()->addDataForTest($this, instrumentation\coverage::getRawScores());
 					}
 
 					if ($assertionNumber == $this->score->getAssertionNumber() && $this->methodIsNotVoid($this->currentMethod) === false)

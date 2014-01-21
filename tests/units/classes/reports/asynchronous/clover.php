@@ -62,7 +62,7 @@ class clover extends atoum\test
 			->if($adapter->extension_loaded = true)
 			->and($report = new testedClass($adapter))
 			->and($score = new \mock\mageekguy\atoum\score())
-			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
+			->and($coverage = new \mock\mageekguy\atoum\score\coverage\xdebug())
 			->and($writer = new \mock\mageekguy\atoum\writers\file())
 			->and($writer->getMockController()->write = $writer)
 			->then
@@ -134,7 +134,7 @@ class clover extends atoum\test
 				)
 			))
 			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
-			->and($coverage->addXdebugDataForTest($this, $xdebugData))
+			->and($coverage->addDataForTest($this, $xdebugData))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)

@@ -3,136 +3,139 @@
 namespace mageekguy\atoum\instrumentation\autoloader;
 
 use
-    mageekguy\atoum,
-    mageekguy\atoum\instrumentation\stream
+	mageekguy\atoum,
+	mageekguy\atoum\instrumentation\stream
 ;
 
 class decorator implements atoum\autoloader\decorator
 {
-    protected $instrumentationEnabled = true;
-    protected $moleInstrumentationEnabled = true;
-    protected $coverageInstrumentationEnabled = true;
-    protected $ignoredPaths = array();
+	protected $instrumentationEnabled = true;
+	protected $moleInstrumentationEnabled = true;
+	protected $coverageInstrumentationEnabled = true;
+	protected $ignoredPaths = array();
 
-    public function __construct()
-    {
-        $this->ignorePath(dirname(__DIR__));
-    }
+	public function __construct()
+	{
+		$this
+			->ignorePath(dirname(__DIR__))
+			->ignorePath(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'scripts')
+		;
+	}
 
-    public function decorate($path)
-    {
-        if ($path !== null && $this->isIgnored($path) === false)
-        {
-            $path = $this->getInstrumentedPath($path);
-        }
+	public function decorate($path)
+	{
+		if ($path !== null && $this->isIgnored($path) === false)
+		{
+			$path = $this->getInstrumentedPath($path);
+		}
 
-        return $path;
-    }
+		return $path;
+	}
 
-    public function getInstrumentedPath($path)
-    {
-        $options = null;
+	public function getInstrumentedPath($path)
+	{
+		$options = null;
 
-        if ($this->moleInstrumentationEnabled === false)
-        {
-            $options[] = '-moles';
-        }
+		if ($this->moleInstrumentationEnabled === false)
+		{
+			$options[] = '-moles';
+		}
 
-        if ($this->coverageInstrumentationEnabled === false)
-        {
-            $options[] = '-coverage-transition';
-        }
+		if ($this->coverageInstrumentationEnabled === false)
+		{
+			$options[] = '-coverage-transition';
+		}
 
-        if (sizeof($options))
-        {
-            $options = 'options=' . implode(',', $options) . DIRECTORY_SEPARATOR;
-        }
+		if (sizeof($options))
+		{
+			$options = 'options=' . implode(',', $options) . DIRECTORY_SEPARATOR;
+		}
 
-        return stream::defaultProtocol . stream::protocolSeparator . $options . $path;
-    }
+		return stream::defaultProtocol . stream::protocolSeparator . $options . $path;
+	}
 
-    public function isIgnored($path)
-    {
-        foreach ($this->ignoredPaths as $ignored)
-        {
-            if (strpos($path, $ignored) === 0)
-            {
-                return true;
-            }
-        }
+	public function isIgnored($path)
+	{
+		foreach ($this->ignoredPaths as $ignored)
+		{
+			if (strpos($path, $ignored) === 0)
+			{
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public function ignorePath($path)
-    {
-        if (in_array($path, $this->ignoredPaths) === false)
-        {
-            $this->ignoredPaths[] = $path;
-        }
+	public function ignorePath($path)
+	{
+		if (in_array((string) $path, $this->ignoredPaths) === false)
+		{
+			$this->ignoredPaths[] = (string) $path;
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getIgnoredPaths()
-    {
-        return $this->ignoredPaths;
-    }
+	public function getIgnoredPaths()
+	{
+		return $this->ignoredPaths;
+	}
 
-    public function enableInstrumentation()
-    {
-        $this->instrumentationEnabled = true;
+	public function enableInstrumentation()
+	{
+		$this->instrumentationEnabled = true;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function disableInstrumentation()
-    {
-        $this->instrumentationEnabled = false;
+	public function disableInstrumentation()
+	{
+		$this->instrumentationEnabled = false;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function instrumentationEnabled()
-    {
-        return $this->instrumentationEnabled;
-    }
+	public function instrumentationEnabled()
+	{
+		return $this->instrumentationEnabled;
+	}
 
-    public function enableMoleInstrumentation()
-    {
-        $this->moleInstrumentationEnabled = true;
+	public function enableMoleInstrumentation()
+	{
+		$this->moleInstrumentationEnabled = true;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function disableMoleInstrumentation()
-    {
-        $this->moleInstrumentationEnabled = false;
+	public function disableMoleInstrumentation()
+	{
+		$this->moleInstrumentationEnabled = false;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function moleInstrumentationEnabled()
-    {
-        return $this->moleInstrumentationEnabled;
-    }
+	public function moleInstrumentationEnabled()
+	{
+		return $this->moleInstrumentationEnabled;
+	}
 
-    public function enableCoverageInstrumentation()
-    {
-        $this->coverageInstrumentationEnabled = true;
+	public function enableCoverageInstrumentation()
+	{
+		$this->coverageInstrumentationEnabled = true;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function disableCoverageInstrumentation()
-    {
-        $this->coverageInstrumentationEnabled = false;
+	public function disableCoverageInstrumentation()
+	{
+		$this->coverageInstrumentationEnabled = false;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function coverageInstrumentationEnabled()
-    {
-        return $this->coverageInstrumentationEnabled;
-    }
-} 
+	public function coverageInstrumentationEnabled()
+	{
+		return $this->coverageInstrumentationEnabled;
+	}
+}

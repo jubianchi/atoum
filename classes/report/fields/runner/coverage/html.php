@@ -203,12 +203,12 @@ class html extends report\fields\runner\coverage\cli
 									$lineTemplateName = 'coveredLineTemplates';
 							}
 
-							${$lineTemplateName}->lineNumber = $lineNumber;
-							${$lineTemplateName}->code = htmlentities($line, ENT_QUOTES, 'UTF-8');
+							$$lineTemplateName->lineNumber = $lineNumber;
+							$$lineTemplateName->code = htmlentities($line, ENT_QUOTES, 'UTF-8');
 
 							if (isset($methodLines[$lineNumber]) === true)
 							{
-								foreach (${$lineTemplateName}->anchor as $anchorTemplate)
+								foreach ($$lineTemplateName->anchor as $anchorTemplate)
 								{
 									$anchorTemplate->resetData();
 									$anchorTemplate->method = $currentMethod;
@@ -216,7 +216,7 @@ class html extends report\fields\runner\coverage\cli
 								}
 							}
 
-							${$lineTemplateName}
+							$$lineTemplateName
 								->addToParent()
 								->resetData()
 							;

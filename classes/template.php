@@ -86,7 +86,7 @@ class template extends template\data
 	{
 		foreach ($mixed as $tag => $value)
 		{
-			$this->{$tag} = $value;
+			$this->$tag = $value;
 		}
 
 		return $this;

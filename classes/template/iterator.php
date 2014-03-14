@@ -43,7 +43,7 @@ class iterator implements \iterator, \countable
 	{
 		foreach ($this->tags as $innerTag)
 		{
-			$innerTag->{$tag} = $data;
+			$innerTag->$tag = $data;
 		}
 
 		return $this;
@@ -53,7 +53,7 @@ class iterator implements \iterator, \countable
 	{
 		foreach ($this->tags as $innerTag)
 		{
-			$innerTag->{$tag}->resetData();
+			$innerTag->$tag->resetData();
 		}
 
 		return $this;

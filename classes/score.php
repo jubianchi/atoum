@@ -32,7 +32,7 @@ class score
 
 	public function setCoverage(score\coverage $coverage = null)
 	{
-		$this->coverage = $coverage ?: new atoum\score\coverage\xdebug();
+		$this->coverage = $coverage ?: new atoum\instrumentation\score\coverage();
 
 		return $this;
 	}

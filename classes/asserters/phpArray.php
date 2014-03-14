@@ -487,9 +487,12 @@ class phpArray extends asserters\variable implements \arrayAccess
 	{
 		$unknownValues = array();
 
-		foreach ($values as $value) if (in_array($value, $this->value, $strict) === false)
+		foreach ($values as $value)
 		{
-			$unknownValues[] = $value;
+			if (in_array($value, $this->value, $strict) === false)
+			{
+				$unknownValues[] = $value;
+			}
 		}
 
 		if (sizeof($unknownValues) <= 0)
@@ -520,9 +523,12 @@ class phpArray extends asserters\variable implements \arrayAccess
 	{
 		$knownValues = array();
 
-		foreach ($values as $value) if (in_array($value, $this->value, $strict) === true)
+		foreach ($values as $value)
 		{
-			$knownValues[] = $value;
+			if (in_array($value, $this->value, $strict) === true)
+			{
+				$knownValues[] = $value;
+			}
 		}
 
 		if (sizeof($knownValues) <= 0)

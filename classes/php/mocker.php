@@ -24,12 +24,16 @@ class mocker
 
 	public function __get($functionName)
 	{
-		return static::$adapter->{$this->generateIfNotExists($functionName)};
+		$functionName = $this->generateIfNotExists($functionName);
+
+		return static::$adapter->$functionName;
 	}
 
 	public function __set($functionName, $mixed)
 	{
-		static::$adapter->{$this->generateIfNotExists($functionName)} = $mixed;
+		$functionName = $this->generateIfNotExists($functionName);
+
+		static::$adapter->$functionName = $mixed;
 
 		return $this;
 	}
@@ -118,7 +122,7 @@ class mocker
 
 	protected function generateIfNotExists($functionName)
 	{
-		if (isset($this->{$functionName}) === false)
+		if (isset($this->$functionName) === false)
 		{
 			$this->generate($functionName);
 		}
@@ -148,14 +152,14 @@ class mocker
 			$closure = eval('return function(' . static::getParametersSignature($reflectedFunction) . ') { return call_user_func_array(\'\\' . $function . '\', ' . static::getParameters($reflectedFunction) . '); };');
 		}
 
-		static::$adapter->{$fqdn}->setClosure($closure);
+		static::$adapter->$fqdn->setClosure($closure);
 
 		return $this;
 	}
 
 	protected function functionExists($fqdn)
 	{
-		return (isset(static::$adapter->{$fqdn}) === true);
+		return (isset(static::$adapter->$fqdn) === true);
 	}
 
 	protected static function getParametersSignature(\reflectionFunction $function)

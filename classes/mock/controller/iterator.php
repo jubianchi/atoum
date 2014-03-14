@@ -23,7 +23,7 @@ class iterator implements \iteratorAggregate
 	{
 		foreach ($this->getMethods() as $method)
 		{
-			$this->controller->{$method}->{$keyword} = $mixed;
+			$this->controller->$method->$keyword = $mixed;
 		}
 
 		return $this;

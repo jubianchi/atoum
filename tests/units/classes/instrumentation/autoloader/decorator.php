@@ -25,11 +25,30 @@ class decorator extends test
 			->if($autoloader = new testedClass())
 			->then
 				->object($autoloader->ignorePath($path = uniqid()))->isIdenticalTo($autoloader)
-				->array($autoloader->getIgnoredPaths())->isEqualTo(array(dirname(dirname($this->getTestedClassPath())), $path))
+				->array($autoloader->getIgnoredPaths())->isEqualTo(
+					array(
+						dirname(dirname($this->getTestedClassPath())),
+						dirname(dirname(dirname($this->getTestedClassPath()))) . DIRECTORY_SEPARATOR . 'scripts',
+						$path
+					)
+				)
 				->object($autoloader->ignorePath($path))->isIdenticalTo($autoloader)
-				->array($autoloader->getIgnoredPaths())->isEqualTo(array(dirname(dirname($this->getTestedClassPath())), $path))
+				->array($autoloader->getIgnoredPaths())->isEqualTo(
+					array(
+						dirname(dirname($this->getTestedClassPath())),
+						dirname(dirname(dirname($this->getTestedClassPath()))) . DIRECTORY_SEPARATOR . 'scripts',
+						$path
+					)
+				)
 				->object($autoloader->ignorePath($otherPath = uniqid()))->isIdenticalTo($autoloader)
-				->array($autoloader->getIgnoredPaths())->isEqualTo(array(dirname(dirname($this->getTestedClassPath())), $path, $otherPath))
+				->array($autoloader->getIgnoredPaths())->isEqualTo(
+					array(
+						dirname(dirname($this->getTestedClassPath())),
+						dirname(dirname(dirname($this->getTestedClassPath()))) . DIRECTORY_SEPARATOR . 'scripts',
+						$path,
+						$otherPath
+					)
+				)
 		;
 	}
 

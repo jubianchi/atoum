@@ -96,7 +96,6 @@ abstract class test implements observable, \countable
 			->setScore()
 			->setLocale()
 			->setReflectionMethodFactory()
-			->enableCodeCoverage()
 		;
 
 		$class = ($reflectionClassFactory ? $reflectionClassFactory($this) : new \reflectionClass($this));
@@ -645,7 +644,7 @@ abstract class test implements observable, \countable
 
 	public function enableCodeCoverage()
 	{
-		$this->codeCoverage = $this->adapter->extension_loaded('xdebug');
+		$this->codeCoverage = true;
 
 		return $this;
 	}
@@ -1086,7 +1085,10 @@ abstract class test implements observable, \countable
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
-						xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+						if (extension_loaded('xdebug'))
+						{
+							xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+						}
 					}
 
 					$assertionNumber = $this->score->getAssertionNumber();
@@ -1148,13 +1150,18 @@ abstract class test implements observable, \countable
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
-						$this->score->getCoverage()->addDataForTest($this, xdebug_get_code_coverage());
-						xdebug_stop_code_coverage();
-					}
-
-					if ($this->instrumentationIsEnabled() === true && $this->coverageInstrumentationIsEnabled() === true)
-					{
-						$this->score->getCoverage()->addDataForTest($this, instrumentation\coverage::getRawScores());
+						if (extension_loaded('xdebug') === true)
+						{
+							$this->score->getCoverage()->addDataForTest($this, xdebug_get_code_coverage());
+							xdebug_stop_code_coverage();
+						}
+						else
+						{
+							if ($this->instrumentationIsEnabled() === true && $this->coverageInstrumentationIsEnabled() === true)
+							{
+								$this->score->getCoverage()->addDataForTest($this, instrumentation\coverage::getRawScores());
+							}
+						}
 					}
 
 					if ($assertionNumber == $this->score->getAssertionNumber() && $this->methodIsNotVoid($this->currentMethod) === false)

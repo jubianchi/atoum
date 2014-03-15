@@ -100,7 +100,7 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getMethodTags())->isEmpty()
 					->array($test->getDataProviders())->isEmpty()
 					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
-					->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
+					->boolean($test->codeCoverageIsEnabled())->isFalse()
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
 					->variable($test->getBootstrapFile())->isNull()
@@ -260,10 +260,9 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->assert('Code coverage must be enabled only if xdebug is available')
 					->if($adapter = new atoum\test\adapter())
-					->and($adapter->extension_loaded = function($extension) { return $extension == 'xdebug'; })
 					->and($test = new emptyTest($adapter))
 					->then
-						->boolean($test->codeCoverageIsEnabled())->isTrue()
+						->boolean($test->codeCoverageIsEnabled())->isFalse()
 						->object($test->enableCodeCoverage())->isIdenticalTo($test)
 						->boolean($test->codeCoverageIsEnabled())->isTrue()
 					->if($test->disableCodeCoverage())
@@ -271,13 +270,6 @@ namespace mageekguy\atoum\tests\units
 						->boolean($test->codeCoverageIsEnabled())->isFalse()
 						->object($test->enableCodeCoverage())->isIdenticalTo($test)
 						->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->assert('Code coverage must not be enabled if xdebug is not available')
-					->if($adapter->extension_loaded = function($extension) { return $extension != 'xdebug'; })
-					->and($test = new emptyTest($adapter))
-					->then
-						->boolean($test->codeCoverageIsEnabled())->isFalse()
-						->object($test->enableCodeCoverage())->isIdenticalTo($test)
-						->boolean($test->codeCoverageIsEnabled())->isFalse()
 			;
 		}
 
@@ -287,6 +279,7 @@ namespace mageekguy\atoum\tests\units
 				->if($adapter = new atoum\test\adapter())
 				->and($adapter->extension_loaded = true)
 				->and($test = new emptyTest($adapter))
+				->and($test->enableCodeCoverage())
 				->then
 					->boolean($test->codeCoverageIsEnabled())->isTrue()
 					->object($test->disableCodeCoverage())->isIdenticalTo($test)

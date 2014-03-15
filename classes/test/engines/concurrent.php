@@ -117,7 +117,7 @@ class concurrent extends test\engine
 					$phpCode .= '$test->disableMoleInstrumentation();';
 				}
 
-				if ($this->test->coverageInstrumentationIsEnabled() === false)
+				if ($this->test->coverageInstrumentationIsEnabled() === false || $this->test->codeCoverageIsEnabled() === false)
 				{
 					$phpCode .= '$test->disableCoverageInstrumentation();';
 				}
@@ -134,6 +134,7 @@ class concurrent extends test\engine
 			}
 			else
 			{
+				$phpCode .= '$test->enableCodeCoverage();';
 				$phpCode .= '$coverage = $test->getCoverage();';
 
 				foreach ($this->test->getCoverage()->getExcludedClasses() as $excludedClass)

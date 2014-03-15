@@ -32,7 +32,14 @@ class score
 
 	public function setCoverage(score\coverage $coverage = null)
 	{
-		$this->coverage = $coverage ?: new atoum\instrumentation\score\coverage();
+		if (extension_loaded('xdebug') === true)
+		{
+			$this->coverage = $coverage ?: new atoum\score\coverage\xdebug();
+		}
+		else
+		{
+			$this->coverage = $coverage ?: new atoum\instrumentation\score\coverage();
+		}
 
 		return $this;
 	}

@@ -465,7 +465,7 @@ class runner implements observable
 
 			if ($this->coverageInstrumentation === false)
 			{
-				$instrumentation->disableMoleInstrumentation();
+				$instrumentation->disableCoverageInstrumentation();
 			}
 
 			atoum\autoloader::get()->addDecorator($instrumentation);
@@ -533,6 +533,11 @@ class runner implements observable
 						$test->enableDebugMode();
 					}
 
+					if ($this->codeCoverage === true)
+					{
+						$test->enableCodeCoverage();
+					}
+
 					if ($this->instrumentationIsEnabled() === true)
 					{
 						$test->enableInstrumentation();
@@ -542,7 +547,7 @@ class runner implements observable
 							$test->disableMoleInstrumentation();
 						}
 
-						if ($this->coverageInstrumentationIsEnabled() === false)
+						if ($this->coverageInstrumentationIsEnabled() === false || $this->codeCoverageIsEnabled() === false)
 						{
 							$test->disableCoverageInstrumentation();
 						}

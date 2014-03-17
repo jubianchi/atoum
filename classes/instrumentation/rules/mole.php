@@ -17,7 +17,7 @@ class mole extends rules
 				array(
 					array('{'),
 					function (array $variables) {
-						$class = '\atoum\instrumentation\mole';
+						$class = 'mageekguy\atoum\instrumentation\mole';
 
 						if (true === $variables['method']['static'])
 						{

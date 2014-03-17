@@ -31,6 +31,7 @@ class runner implements observable
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
+	protected $xDebugCodeCoverage = true;
 	protected $instrumentation = false;
 	protected $moleInstrumentation = true;
 	protected $coverageInstrumentation = true;
@@ -102,7 +103,20 @@ class runner implements observable
 
 	public function setScore(runner\score $score = null)
 	{
-		$this->score = $score ?: new runner\score();
+		if($score === null) {
+			if ($this->xDebugCodeCoverageIsEnabled() === true)
+			{
+				$coverage = new atoum\score\coverage\xdebug();
+			}
+			else
+			{
+				$coverage = new atoum\instrumentation\score\coverage();
+			}
+
+			$score = new runner\score($coverage);
+		}
+
+		$this->score = $score;
 
 		return $this;
 	}
@@ -320,14 +334,14 @@ class runner implements observable
 	{
 		$this->codeCoverage = true;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function disableCodeCoverage()
 	{
 		$this->codeCoverage = false;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function codeCoverageIsEnabled()
@@ -335,18 +349,37 @@ class runner implements observable
 		return $this->codeCoverage;
 	}
 
+	public function enableXDebugCodeCoverage()
+	{
+		$this->xDebugCodeCoverage = true;
+
+		return $this->setScore();
+	}
+
+	public function disableXDebugCodeCoverage()
+	{
+		$this->xDebugCodeCoverage = false;
+
+		return $this->setScore();
+	}
+
+	public function xDebugCodeCoverageIsEnabled()
+	{
+		return $this->codeCoverage && $this->xDebugCodeCoverage && extension_loaded('xdebug');
+	}
+
 	public function enableInstrumentation()
 	{
 		$this->instrumentation = true;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function disableInstrumentation()
 	{
 		$this->instrumentation = false;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function instrumentationIsEnabled()
@@ -358,14 +391,14 @@ class runner implements observable
 	{
 		$this->moleInstrumentation = true;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function disableMoleInstrumentation()
 	{
 		$this->moleInstrumentation = false;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function moleInstrumentationIsEnabled()
@@ -536,6 +569,11 @@ class runner implements observable
 					if ($this->codeCoverage === true)
 					{
 						$test->enableCodeCoverage();
+
+						if ($this->xDebugCodeCoverage === false)
+						{
+							$test->disableXDebugCodeCoverage();
+						}
 					}
 
 					if ($this->instrumentationIsEnabled() === true)

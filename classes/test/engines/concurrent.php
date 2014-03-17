@@ -122,6 +122,11 @@ class concurrent extends test\engine
 					$phpCode .= '$test->disableCoverageInstrumentation();';
 				}
 			}
+
+			if ($this->test->xDebugCodeCoverageIsEnabled() === false)
+			{
+				$phpCode .= '$test->disableXDebugCodeCoverage();';
+			}
 			
 			if ($this->test->debugModeIsEnabled() === true)
 			{

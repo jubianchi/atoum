@@ -3,6 +3,7 @@
 namespace mageekguy\atoum;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\test,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\asserter,
@@ -77,6 +78,7 @@ abstract class test implements observable, \countable
 	private $coverageInstrumentation = true;
 	private $xdebugConfig = null;
 	private $codeCoverage = false;
+	private $xDebugCodeCoverage = true;
 	private $classHasNotVoidMethods = false;
 
 	private static $namespace = null;
@@ -213,7 +215,20 @@ abstract class test implements observable, \countable
 
 	public function setScore(test\score $score = null)
 	{
-		$this->score = $score ?: new test\score();
+		if($score === null) {
+			if ($this->xDebugCodeCoverageIsEnabled() === true)
+			{
+				$coverage = new atoum\score\coverage\xdebug();
+			}
+			else
+			{
+				$coverage = new atoum\instrumentation\score\coverage();
+			}
+
+			$score = new test\score($coverage);
+		}
+
+		$this->score = $score;
 
 		return $this;
 	}
@@ -565,14 +580,14 @@ abstract class test implements observable, \countable
 	{
 		$this->instrumentation = true;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function disableInstrumentation()
 	{
 		$this->instrumentation = false;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function instrumentationIsEnabled()
@@ -603,14 +618,14 @@ abstract class test implements observable, \countable
 	{
 		$this->coverageInstrumentation = true;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function disableCoverageInstrumentation()
 	{
 		$this->coverageInstrumentation = false;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function coverageInstrumentationIsEnabled()
@@ -646,14 +661,33 @@ abstract class test implements observable, \countable
 	{
 		$this->codeCoverage = true;
 
-		return $this;
+		return $this->setScore();
 	}
 
 	public function disableCodeCoverage()
 	{
 		$this->codeCoverage = false;
 
-		return $this;
+		return $this->setScore();
+	}
+
+	public function xDebugCodeCoverageIsEnabled()
+	{
+		return $this->codeCoverage && $this->xDebugCodeCoverage && extension_loaded('xdebug');
+	}
+
+	public function enableXDebugCodeCoverage()
+	{
+		$this->xDebugCodeCoverage = true;
+
+		return $this->setScore();
+	}
+
+	public function disableXDebugCodeCoverage()
+	{
+		$this->xDebugCodeCoverage = false;
+
+		return $this->setScore();
 	}
 
 	public function setMaxChildrenNumber($number)
@@ -1083,12 +1117,9 @@ abstract class test implements observable, \countable
 
 					$this->beforeTestMethod($this->currentMethod);
 
-					if ($this->codeCoverageIsEnabled() === true)
+					if ($this->xDebugCodeCoverageIsEnabled() === true)
 					{
-						if (extension_loaded('xdebug'))
-						{
-							xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-						}
+						xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 					}
 
 					$assertionNumber = $this->score->getAssertionNumber();
@@ -1150,7 +1181,7 @@ abstract class test implements observable, \countable
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
-						if (extension_loaded('xdebug') === true)
+						if ($this->xDebugCodeCoverageIsEnabled() === true)
 						{
 							$this->score->getCoverage()->addDataForTest($this, xdebug_get_code_coverage());
 							xdebug_stop_code_coverage();

@@ -18,7 +18,7 @@ class inline extends test\engine
 
 	public function __construct(atoum\test\score $score = null)
 	{
-		$this->setScore();
+		$this->setScore($score);
 	}
 
 	public function setScore(atoum\test\score $score = null)
@@ -39,13 +39,7 @@ class inline extends test\engine
 
 		if ($currentTestMethod !== null)
 		{
-			$testScore = $test->getScore();
-
-			$test
-				->setScore($this->score->reset())
-				->runTestMethod($currentTestMethod)
-				->setScore($testScore)
-			;
+			$this->score = $test->runTestMethod($currentTestMethod)->getScore();
 		}
 
 		return $this;

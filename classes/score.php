@@ -32,14 +32,19 @@ class score
 
 	public function setCoverage(score\coverage $coverage = null)
 	{
-		if (extension_loaded('xdebug') === true)
+		if($coverage === null)
 		{
-			$this->coverage = $coverage ?: new atoum\score\coverage\xdebug();
+			if (extension_loaded('xdebug') === true)
+			{
+				$coverage = new atoum\score\coverage\xdebug();
+			}
+			else
+			{
+				$coverage = new atoum\instrumentation\score\coverage();
+			}
 		}
-		else
-		{
-			$this->coverage = $coverage ?: new atoum\instrumentation\score\coverage();
-		}
+
+		$this->coverage = $coverage;
 
 		return $this;
 	}
@@ -385,8 +390,8 @@ class score
 	public function addUncompletedMethod($file, $class, $method, $exitCode, $output)
 	{
 		$this->uncompletedMethods[] = array(
-            'file' => $file,
-            'class' => $class,
+			'file' => $file,
+			'class' => $class,
 			'method' => $method,
 			'exitCode' => $exitCode,
 			'output' => $output

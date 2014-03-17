@@ -44,7 +44,7 @@ class filter extends \php_user_filter
 			stream_bucket_make_writeable($out);
 			stream_bucket_append($out, $bucket);
 
-			$return		= PSFS_PASS_ON;
+			$return = PSFS_PASS_ON;
 			$this->buffer = null;
 		}
 

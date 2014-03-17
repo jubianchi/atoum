@@ -12,13 +12,13 @@ const … = '__atoum_fill';
 
 class matching {
 
-	const TOKEN_ALL			 = -1;
-	const TOKEN_ID			  = 0;
-	const TOKEN_VALUE		   = 1;
-	const TOKEN_LINE			= 2;
+	const TOKEN_ALL = -1;
+	const TOKEN_ID = 0;
+	const TOKEN_VALUE = 1;
+	const TOKEN_LINE = 2;
 	const SHIFT_REPLACEMENT_END = 0;
 
-	protected static $_structures		  = array(
+	protected static $_structures = array(
 		T_CATCH,
 		T_DECLARE,
 		T_DO,
@@ -33,40 +33,38 @@ class matching {
 		T_WHILE
 	);
 	protected static $_structuresAsStrings = array(
-		T_CATCH	=> 'catch',
-		T_DECLARE  => 'declare',
-		T_DO	   => 'do',
-		T_CASE	 => 'case',
-		T_DEFAULT  => 'default',
-		T_ELSE	 => 'else',
-		T_ELSEIF   => 'if',
-		T_FINALLY  => 'finally',
-		T_FOR	  => 'for',
-		T_FOREACH  => 'foreach',
-		T_IF	   => 'if',
-		T_SWITCH   => 'switch',
-		T_TRY	  => 'try',
-		T_WHILE	=> 'while'
+		T_CATCH => 'catch',
+		T_DECLARE => 'declare',
+		T_DO => 'do',
+		T_CASE => 'case',
+		T_DEFAULT => 'default',
+		T_ELSE => 'else',
+		T_ELSEIF => 'if',
+		T_FINALLY => 'finally',
+		T_FOR => 'for',
+		T_FOREACH => 'foreach',
+		T_IF => 'if',
+		T_SWITCH => 'switch',
+		T_TRY => 'try',
+		T_WHILE => 'while'
 	);
-	protected $_sequence				   = null;
-	protected $_index					  = 0;
-	protected $_max						= 0;
-	protected $_skip					   = array();
-	protected $_rules					  = array();
-	protected $_variables				  = array();
+	protected $_sequence = null;
+	protected $_index = 0;
+	protected $_max = 0;
+	protected $_skip = array();
+	protected $_rules = array();
+	protected $_variables = array();
 
-
-
-	public function __construct ( Array $sequence ) {
-
+	public function __construct(array $sequence)
+    {
 		$this->setSequence($sequence);
 
 		return;
 	}
 
-	protected function setSequence ( Array $sequence ) {
-
-		$old			 = $this->_sequence;
+	protected function setSequence(array $sequence)
+    {
+		$old = $this->_sequence;
 		$this->_sequence = $sequence;
 
 		for($i = 0, $max = count($this->_sequence) - 1; $i <= $max; ++$i) {

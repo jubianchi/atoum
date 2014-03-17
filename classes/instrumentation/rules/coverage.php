@@ -12,20 +12,21 @@ class coverage extends rules
 	public function __construct()
 	{
 		$coverageExport = array();
-		$markerCount	= 0;
+		$markerCount = 0;
 
 		$this
 			->add(
 				'method::start',
 				array(
 					array('{'),
-					function (Array $variables) use (& $markerCount ) {
+					function (Array $variables) use (& $markerCount )
+					{
 						$id = $variables['class']['name'] . '::' . $variables['method']['name'];
 
 						return array(
 							'{',
 							'\mageekguy\atoum\instrumentation\coverage::mark(\'' .
-							$id . '\', ' . $markerCount++ . ');'
+							$id . '\', ' . $markerCount++ . ', __LINE__);'
 						);
 					}
 				)
@@ -37,7 +38,8 @@ class coverage extends rules
 				'method::end',
 				array(
 					array(),
-					function ($variables) use (& $markerCount, & $coverageExport) {
+					function ($variables) use (& $markerCount, & $coverageExport)
+					{
 						$id = $variables['class']['name'] . '::' . $variables['method']['name'];
 
 						$coverageExport[$id] = $markerCount;
@@ -51,12 +53,13 @@ class coverage extends rules
 				'if::condition::start',
 				$conditionStart = array(
 					array('('),
-					function ($variables) use (& $markerCount) {
+					function ($variables) use (& $markerCount)
+					{
 						$id = $variables['class']['name'] . '::' . $variables['method']['name'];
 
 						return array(
 							'(\mageekguy\atoum\instrumentation\coverage::markCondition(' .
-							'\'' . $id . '\', ' . $markerCount++ . ', '
+							'\'' . $id . '\', ' . $markerCount++ . ', __LINE__, '
 						);
 					},
 					matching::SHIFT_REPLACEMENT_END
@@ -67,13 +70,14 @@ class coverage extends rules
 				'case::start',
 				$caseStart = array(
 					array(':'),
-					function ($variables) use (& $markerCount) {
+					function ($variables) use (& $markerCount)
+					{
 						$id = $variables['class']['name'] . '::' . $variables['method']['name'];
 
 						return array(
 							':',
 							'\mageekguy\atoum\instrumentation\coverage::markCondition(' .
-							'\'' . $id . '\', ' . $markerCount++ . ', true);'
+							'\'' . $id . '\', ' . $markerCount++ . ', __LINE__, true);'
 						);
 					},
 					matching::SHIFT_REPLACEMENT_END
@@ -93,14 +97,15 @@ class coverage extends rules
 				'for::condition::end',
 				$forConditionEnd = array(
 					array(')', '{'),
-					function ($variables) use (& $markerCount) {
+					function ($variables) use (& $markerCount)
+					{
 						$id = $variables['class']['name'] . '::' . $variables['method']['name'];
 
 						return array(
 							')',
 							'{',
 							'\mageekguy\atoum\instrumentation\coverage::markCondition(' .
-							'\'' . $id . '\', ' . $markerCount++ . ', true);'
+							'\'' . $id . '\', ' . $markerCount++ . ', __LINE__, true);'
 						);
 					},
 					matching::SHIFT_REPLACEMENT_END
@@ -111,13 +116,14 @@ class coverage extends rules
 				'if::block::end',
 				$blockEnd = array(
 					array('}'),
-					function ($variables) use (& $markerCount) {
+					function ($variables) use (& $markerCount)
+					{
 						$id = $variables['class']['name'] . '::' . $variables['method']['name'];
 
 						return array(
 							'}',
 							'\mageekguy\atoum\instrumentation\coverage::markJoin(' .
-							'\'' . $id . '\', ' . $markerCount++ . ');'
+							'\'' . $id . '\', ' . $markerCount++ . ', __LINE__);'
 						);
 					},
 					matching::SHIFT_REPLACEMENT_END
@@ -131,13 +137,14 @@ class coverage extends rules
 				'else::block::start',
 				array(
 					array('{'),
-					function ($variables) use (& $markerCount) {
+					function ($variables) use (& $markerCount)
+					{
 						$id = $variables['class']['name'] . '::' . $variables['method']['name'];
 
 						return array(
 							'{',
 							'\mageekguy\atoum\instrumentation\coverage::markCondition(' .
-							'\'' . $id . '\', ' . $markerCount++ . ', true);'
+							'\'' . $id . '\', ' . $markerCount++ . ', true, __LINE__);'
 						);
 					},
 					matching::SHIFT_REPLACEMENT_END
@@ -147,7 +154,8 @@ class coverage extends rules
 				'file::end',
 				array(
 					array(),
-					function ($variables) use (& $coverageExport) {
+					function ($variables) use (& $coverageExport)
+					{
 						return array(
 							'\mageekguy\atoum\instrumentation\coverage::export(' . var_export($coverageExport, true) . ');'
 						);

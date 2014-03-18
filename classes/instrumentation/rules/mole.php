@@ -11,6 +11,7 @@ class mole extends rules
 {
 	public function get()
 	{
+        /*
 		$this->add(
 			'method::start',
 			array(
@@ -39,5 +40,6 @@ class mole extends rules
 				)
 			)
 		);
+        */
 	}
 }

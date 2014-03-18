@@ -19,7 +19,7 @@ class coverage extends rules
 				'method::start',
 				array(
 					array('{'),
-					function (Array $variables) use (& $markerCount )
+					function (array $variables) use (& $markerCount)
 					{
 						$id = $variables['class']['name'] . '::' . $variables['method']['name'];
 
@@ -31,9 +31,6 @@ class coverage extends rules
 					}
 				)
 			)
-		;
-
-		$this
 			->add(
 				'method::end',
 				array(

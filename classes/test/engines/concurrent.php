@@ -122,11 +122,6 @@ class concurrent extends test\engine
 					$phpCode .= '$test->disableCoverageInstrumentation();';
 				}
 			}
-
-			if ($this->test->xDebugCodeCoverageIsEnabled() === false)
-			{
-				$phpCode .= '$test->disableXDebugCodeCoverage();';
-			}
 			
 			if ($this->test->debugModeIsEnabled() === true)
 			{
@@ -139,6 +134,11 @@ class concurrent extends test\engine
 			}
 			else
 			{
+                if ($this->test->xDebugCodeCoverageIsEnabled() === false)
+                {
+                    $phpCode .= '$test->disableXDebugCodeCoverage();';
+                }
+
 				$phpCode .= '$test->enableCodeCoverage();';
 				$phpCode .= '$coverage = $test->getCoverage();';
 

@@ -101,19 +101,19 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 					  $className . '::' . $methodName =>
 						 array(
-							1 => false,
-							2 => true,
-							3 => false,
-							4 => false,
-							5 => false
+							1 => array(false, 1),
+							2 => array(true, 2),
+							3 => array(false, 3),
+							4 => array(false, 4),
+							5 => array(false, 5)
 						),
 					  uniqid() . '::' . uniqid() =>
 						 array(
-							1 => true,
-							2 => true,
-							3 => true,
-							4 => true,
-							5 => true
+							1 => array(true, 1),
+							2 => array(true, 2),
+							3 => array(true, 3),
+							4 => array(true, 4),
+							5 => array(true, 5)
 						)
 					)
 				)
@@ -198,19 +198,19 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 					$className . '::' . $methodName =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -302,19 +302,19 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						5 => false,
-						6 => false,
-						7 => true,
-						8 => false,
-						9 => false
+						5 => array(false, 5),
+						6 => array(false, 6),
+						7 => array(true, 7),
+						8 => array(false, 8),
+						9 => array(false, 9)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -376,33 +376,33 @@ class coverage extends atoum\test
 			->and($otherClassFile = uniqid())
 			->and($otherClassName = uniqid())
 			->and($otherMethodName = uniqid())
-			->and($otherXdebugData = array(
+			->and($otherCoverageData = array(
 				  $otherClassName . '::' . $otherMethodName =>
 					 array(
-						1 => false,
-						2 => false,
-						3 => true,
-						4 => true,
-						5 => false,
-						6 => true,
-						7 => true,
-						8 => false,
-						9 => false,
-						10 => true
+						1 => array(false, 1),
+						2 => array(false, 2),
+						3 => array(true, 3),
+						4 => array(true, 4),
+						5 => array(false, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(false, 8),
+						9 => array(false, 9),
+						10 => array(true, 10)
 					),
 				  uniqid() =>
 					 array(
-						500 => true,
-						600 => true,
-						700 => true,
-						800 => true,
-						900 => true
+						500 => array(true, 500),
+						600 => array(true, 600),
+						700 => array(true, 700),
+						800 => array(true, 800),
+						900 => array(true, 900)
 					)
 				)
 			)
 			->and($otherCoverage->setReflectionClassFactory(function() use ($otherClass) { return $otherClass; }))
 			->then
-				->object($coverage->merge($otherCoverage->addDataForTest($this, $otherXdebugData)))->isIdenticalTo($coverage)
+				->object($coverage->merge($otherCoverage->addDataForTest($this, $otherCoverageData)))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEqualTo(array(
 						$className => $classFile,
 						$otherClassName => $otherClassFile
@@ -456,19 +456,19 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						5 => false,
-						6 => false,
-						7 => true,
-						8 => false,
-						9 => false
+						5 => array(false, 5),
+						6 => array(false, 6),
+						7 => array(true, 7),
+						8 => array(false, 8),
+						9 => array(false, 9)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -510,28 +510,28 @@ class coverage extends atoum\test
 			->and($classFile = uniqid())
 			->and($className = uniqid())
 			->and($methodName = uniqid())
-			->and($xdebugData = array(
+			->and($coverageData = array(
 				$className . '::' . $methodName =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
 			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
 			->then
-				->sizeOf($coverage->addDataForTest($this, $xdebugData))->isEqualTo(1)
+				->sizeOf($coverage->addDataForTest($this, $coverageData))->isEqualTo(1)
 		;
 	}
 
@@ -557,13 +557,13 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 				  $className . '::' . uniqid() =>
 					 array(
-						3 => false,
-						4 => false,
-						5 => false,
-						6 => false,
-						7 => false,
-						8 => false,
-						9 => false
+						3 => array(false, 3),
+						4 => array(false, 4),
+						5 => array(false, 5),
+						6 => array(false, 6),
+						7 => array(false, 7),
+						8 => array(false, 8),
+						9 => array(false, 9)
 					)
 				)
 			)
@@ -598,21 +598,21 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => false,
-						4 => false,
-						5 => false,
-						6 => false,
-						7 => false,
-						8 => false,
-						9 => false
+						3 => array(false, 3),
+						4 => array(false, 4),
+						5 => array(false, 5),
+						6 => array(false, 6),
+						7 => array(false, 7),
+						8 => array(false, 8),
+						9 => array(false, 9)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -624,18 +624,18 @@ class coverage extends atoum\test
 			->if($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => false,
-						4 => true,
-						5 => false,
-						6 => false
+						3 => array(false, 3),
+						4 => array(true, 4),
+						5 => array(false, 5),
+						6 => array(false, 6)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -645,18 +645,18 @@ class coverage extends atoum\test
 			->if($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => false,
-						4 => true,
-						5 => false,
-						6 => true
+						3 => array(false, 3),
+						4 => array(true, 4),
+						5 => array(false, 5),
+						6 => array(true, 6)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 			)
 		)
@@ -666,18 +666,18 @@ class coverage extends atoum\test
 		->if($coverageData = array(
 			  $className . '::' . $methodName =>
 				 array(
-					3 => true,
-					4 => true,
-					5 => true,
-					6 => true
+					3 => array(true, 3),
+					4 => array(true, 4),
+					5 => array(true, 5),
+					6 => array(true, 6)
 				),
 			  uniqid() . '::' . uniqid() =>
 				 array(
-					5 => false,
-					6 => false,
-					7 => false,
-					8 => false,
-					9 => false
+					5 => array(false, 5),
+					6 => array(false, 6),
+					7 => array(false, 7),
+					8 => array(false, 8),
+					9 => array(false, 9)
 				)
 			)
 		)
@@ -713,21 +713,21 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => false,
-						4 => false,
-						5 => false,
-						6 => false,
-						7 => false,
-						8 => false,
-						9 => false
+						3 => array(false, 3),
+						4 => array(false, 4),
+						5 => array(false, 5),
+						6 => array(false, 6),
+						7 => array(false, 7),
+						8 => array(false, 8),
+						9 => array(false, 9)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -740,18 +740,18 @@ class coverage extends atoum\test
 			->if($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => false,
-						4 => false,
-						5 => true,
-						6 => false
+						3 => array(false, 3),
+						4 => array(false, 4),
+						5 => array(true, 5),
+						6 => array(false, 6)
 					),
 				  uniqid()  . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -762,18 +762,18 @@ class coverage extends atoum\test
 			->if($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => false,
-						4 => true,
-						5 => true,
-						6 => false
+						3 => array(false, 3),
+						4 => array(true, 4),
+						5 => array(true, 5),
+						6 => array(false, 6)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -784,21 +784,21 @@ class coverage extends atoum\test
 			->if($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => true,
-						4 => true,
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						3 => array(true, 3),
+						4 => array(true, 4),
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => false,
-						6 => false,
-						7 => false,
-						8 => false,
-						9 => false
+						5 => array(false, 5),
+						6 => array(false, 6),
+						7 => array(false, 7),
+						8 => array(false, 8),
+						9 => array(false, 9)
 					)
 				)
 			)
@@ -835,34 +835,34 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 				$className . '::' . $methodName =>
 					array(
-						3 => true,
-						4 => true,
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						3 => array(true, 3),
+						4 => array(true, 4),
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					),
 				uniqid() . '::' . uniqid() =>
 					array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, ç)
 					)
 				)
 			)
 			->and($expected = array(
 				$methodName =>
 					array(
-						3 => true,
-						4 => true,
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						3 => array(true, 3),
+						4 => array(true, 4),
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -899,21 +899,21 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => false,
-						4 => false,
-						5 => false,
-						6 => false,
-						7 => false,
-						8 => false,
-						9 => false
+						3 => array(false, 3),
+						4 => array(false, 4),
+						5 => array(false, 5),
+						6 => array(false, 6),
+						7 => array(false, 7),
+						8 => array(false, 8),
+						9 => array(false, 9)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -926,18 +926,18 @@ class coverage extends atoum\test
 			->if($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => true,
-						4 => false,
-						5 => false,
-						6 => false
+						3 => array(true, 3),
+						4 => array(false, 4),
+						5 => array(false, 5),
+						6 => array(false, 6)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -949,18 +949,18 @@ class coverage extends atoum\test
 			->if($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => true,
-						4 => false,
-						5 => false,
-						6 => true
+						3 => array(true, 3),
+						4 => array(false, 4),
+						5 => array(false, 5),
+						6 => array(true, 6)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)
@@ -972,18 +972,18 @@ class coverage extends atoum\test
 			->if($coverageData = array(
 				  $className . '::' . $methodName =>
 					 array(
-						3 => true,
-						4 => true,
-						5 => true,
-						6 => true
+						3 => array(true, 3),
+						4 => array(true, 4),
+						5 => array(true, 5),
+						6 => array(true, 6)
 					),
 				  uniqid() . '::' . uniqid() =>
 					 array(
-						5 => false,
-						6 => false,
-						7 => false,
-						8 => false,
-						9 => false
+						5 => array(false, 5),
+						6 => array(false, 6),
+						7 => array(false, 7),
+						8 => array(false, 8),
+						9 => array(false, 9)
 					)
 				)
 			)
@@ -1021,21 +1021,21 @@ class coverage extends atoum\test
 			->and($coverageData = array(
 				$className . '::' . $methodName =>
 					array(
-						3 => false,
-						4 => true,
-						5 => false,
-						6 => false,
-						7 => false,
-						8 => false,
-						9 => false
+						3 => array(false, 3),
+						4 => array(true, 4),
+						5 => array(false, 5),
+						6 => array(false, 6),
+						7 => array(false, 7),
+						8 => array(false, 8),
+						9 => array(false, 9)
 					),
 				uniqid() . '::' . uniqid() =>
 					array(
-						5 => true,
-						6 => true,
-						7 => true,
-						8 => true,
-						9 => true
+						5 => array(true, 5),
+						6 => array(true, 6),
+						7 => array(true, 7),
+						8 => array(true, 8),
+						9 => array(true, 9)
 					)
 				)
 			)

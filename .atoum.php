@@ -5,7 +5,7 @@ use mageekguy\atoum;
 $runner
 	->disableXDebugCodeCoverage()
 	->enableInstrumentation()
-		->disableMoleInstrumentation()
+	//	->disableMoleInstrumentation()
 	//	->disableCoverageInstrumentation()
 ;
 

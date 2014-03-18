@@ -29,7 +29,7 @@ class filter extends \php_user_filter
 		while ($iBucket = stream_bucket_make_writeable($in))
 		{
 			$this->buffer .= $iBucket->data;
-			$consumed	  += $iBucket->datalen;
+			$consumed += $iBucket->datalen;
 		}
 
 		if (null !== $consumed)
@@ -64,21 +64,7 @@ class filter extends \php_user_filter
 		$matching->skip(array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT));
 		$matching->match($this->rules);
 
-		$buffer = null;
-
-		foreach ($matching->getSequence() as $token)
-		{
-			if (is_array($token))
-			{
-				$buffer .= $token[$matching::TOKEN_VALUE];
-			}
-			else
-			{
-				$buffer .= $token;
-			}
-		}
-
-		$this->buffer = $buffer;
+		$this->buffer = $matching->__toString();
 
 		return;
 	}
@@ -99,6 +85,16 @@ class filter extends \php_user_filter
 	{
 		$this->parameters = $parameters;
 
+        echo '**********************************************************', "\n";
+        echo '*                                                        *', "\n";
+        echo '*                                                        *', "\n";
+        echo '*                       filter                           *', "\n";
+        echo '*                    setParameters                       *', "\n";
+        echo '*                                                        *', "\n";
+        echo '**********************************************************', "\n";
+
+        print_r(stream_get_meta_data($this->stream));
+
 		if (isset($parameters['moles']) === false || $parameters['moles'] === true)
 		{
 			$this->rules->merge(new rules\mole());
@@ -108,6 +104,15 @@ class filter extends \php_user_filter
 		{
 			$this->rules->merge(new rules\coverage());
 		}
+
+        echo '**********************************************************', "\n";
+        echo '*                                                        *', "\n";
+        echo '*                       ENND                             *', "\n";
+        echo '*                                                        *', "\n";
+        echo '*                       filter                           *', "\n";
+        echo '*                    setParameters                       *', "\n";
+        echo '*                                                        *', "\n";
+        echo '**********************************************************', "\n";
 
 		return $this;
 	}

@@ -15,7 +15,18 @@ class rules implements \iteratorAggregate, \arrayAccess
 
 	public function merge(rules $rules)
 	{
-		$this->rules = array_merge($this->rules, $rules->rules);
+		//$this->rules = array_merge_recursive($this->rules, $rules->rules);
+        var_dump('meeeeeeeeeeeeeeeeeerge');
+        var_dump(get_class($this));
+        echo ' receives ';
+        var_dump(get_class($rules));
+
+        foreach($rules->rules as $context => $list)
+            foreach($list as $rule)
+                $this->add($context, $rule);
+
+        print_r($this->rules);
+        var_dump('========================');
 
 		return $this;
 	}

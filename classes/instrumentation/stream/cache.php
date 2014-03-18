@@ -12,7 +12,7 @@ use
 class cache
 {
 	protected $filePath;
-	protected $cacheFile = false;
+	protected $cacheFile;
 	protected $cacheRootDirectory;
 
 	protected static $cacheDirectory = null;
@@ -60,7 +60,7 @@ class cache
 
 	public function getCachePath()
 	{
-		return rtrim($this->cacheRootDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->filePath;
+		return rtrim($this->cacheRootDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . ltrim($this->filePath, DIRECTORY_SEPARATOR);
 	}
 
 	public function isValid()
@@ -75,7 +75,7 @@ class cache
 
 	protected function cacheFileIsSet()
 	{
-		is_resource($this->cacheFile);
+		return is_resource($this->cacheFile);
 	}
 
 	public static function setCacheDirectory($cacheDirectory)

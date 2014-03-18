@@ -122,22 +122,50 @@ class controller
 
 	public function stream_read($count)
 	{
-		return $this->adapter->fread($this->streamIsSet()->stream, $count);
+		try
+		{
+			return $this->adapter->fread($this->streamIsSet()->stream, $count);
+		}
+		catch (exceptions\runtime $exception)
+		{
+			return false;
+		}
 	}
 
 	public function stream_seek($offset, $whence = SEEK_SET)
 	{
-		return 0 === $this->adapter->fseek($this->streamIsSet()->stream, $offset, $whence);
+		try
+		{
+			return 0 === $this->adapter->fseek($this->streamIsSet()->stream, $offset, $whence);
+		}
+		catch (exceptions\runtime $exception)
+		{
+			return false;
+		}
 	}
 
 	public function stream_stat()
 	{
-		return $this->adapter->fstat($this->streamIsSet()->stream);
+		try
+		{
+			return $this->adapter->fstat($this->streamIsSet()->stream);
+		}
+		catch (exceptions\runtime $exception)
+		{
+			return false;
+		}
 	}
 
 	public function stream_tell()
 	{
-		return $this->adapter->ftell($this->streamIsSet()->stream);
+		try
+		{
+			return $this->adapter->ftell($this->streamIsSet()->stream);
+		}
+		catch (exceptions\runtime $exception)
+		{
+			return false;
+		}
 	}
 
 	public function url_stat($path, $flags) {

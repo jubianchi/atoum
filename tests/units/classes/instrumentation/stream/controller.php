@@ -162,12 +162,7 @@ class controller extends atoum\test
 		$this
 			->if($controller = new testedClass($adapter = new atoum\test\adapter()))
 			->then
-				->exception(function() use ($controller) {
-						$controller->stream_read(rand(0, PHP_INT_MAX));
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Stream is not set')
+				->boolean($controller->stream_read(rand(0, PHP_INT_MAX)))->isFalse()
 			->if($adapter->stream_filter_append = true)
 			->and($adapter->flock = true)
 			->and($adapter->fseek = 0)
@@ -192,12 +187,7 @@ class controller extends atoum\test
 		$this
 			->if($controller = new testedClass($adapter = new atoum\test\adapter()))
 			->then
-				->exception(function() use ($controller) {
-						$controller->stream_seek(rand(0, PHP_INT_MAX));
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Stream is not set')
+				->boolean($controller->stream_seek(rand(0, PHP_INT_MAX)))->isFalse()
 			->if($adapter->stream_filter_append = true)
 			->and($file = file::get())
 			->and($file->setContents($content = uniqid()))
@@ -222,12 +212,7 @@ class controller extends atoum\test
 		$this
 			->if($controller = new testedClass($adapter = new atoum\test\adapter()))
 			->then
-				->exception(function() use ($controller) {
-						$controller->stream_stat();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Stream is not set')
+				->boolean($controller->stream_stat())->isFalse()
 			->if($adapter->stream_filter_append = true)
 			->and($file = file::get())
 			->and($adapter->flock = true)
@@ -251,12 +236,7 @@ class controller extends atoum\test
 		$this
 			->if($controller = new testedClass($adapter = new atoum\test\adapter()))
 			->then
-				->exception(function() use ($controller) {
-						$controller->stream_tell();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Stream is not set')
+				->boolean($controller->stream_tell())->isFalse()
 			->if($adapter->stream_filter_append = true)
 			->and($adapter->flock = true)
 			->and($adapter->fseek = 0)

@@ -38,8 +38,6 @@ class coverage
 			$bucket[static::BUCKET_VALUE] = true;
 			$bucket[static::BUCKET_LINE] = $line;
 		}
-
-		return;
 	}
 
 	public static function markCondition($id, $index, $line, $condition)
@@ -62,8 +60,6 @@ class coverage
 			$bucket[static::BUCKET_VALUE] = true;
 			$bucket[static::BUCKET_LINE] = $line;
 		}
-
-		return;
 	}
 
 	public static function getScore($id)

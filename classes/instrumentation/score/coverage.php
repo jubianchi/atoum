@@ -46,9 +46,9 @@ class coverage extends score\coverage
 
 								if (isset($data[$id]) === true)
 								{
-									foreach ($data[$id] as $index => $covered)
+									foreach ($data[$id] as $index => $bucket)
 									{
-										$this->methods[$declaringClassName][$method->getName()][$index] = $covered;
+										$this->methods[$declaringClassName][$method->getName()][$index] = $bucket[atoum\instrumentation\coverage::BUCKET_VALUE];
 									}
 								}
 							}

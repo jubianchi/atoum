@@ -38,7 +38,7 @@ class cache
 			@mkdir($cacheDir, 0777, true);
 		}
 
-		if (($this->cacheFile = fopen($cachePath, 'w')) !== false)
+		if (($this->cacheFile = @fopen($cachePath, 'w')) !== false)
 		{
 			flock($this->cacheFile, LOCK_EX);
 		}

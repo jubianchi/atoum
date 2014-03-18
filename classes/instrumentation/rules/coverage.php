@@ -31,10 +31,6 @@ class coverage extends rules
 					}
 				)
 			)
-		;
-
-        /*
-		$this
 			->add(
 				'method::end',
 				array(
@@ -164,6 +160,5 @@ class coverage extends rules
 				)
 			)
 		;
-        */
 	}
 }

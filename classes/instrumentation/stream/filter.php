@@ -19,7 +19,14 @@ class filter extends \php_user_filter
 
 	function __construct()
 	{
+		$this->reset();
+	}
+
+	public function reset()
+	{
 		$this->rules = new rules();
+
+		return $this;
 	}
 
 	public function filter($in, $out, &$consumed, $closing)
@@ -83,17 +90,7 @@ class filter extends \php_user_filter
 
 	public function setParameters($parameters)
 	{
-		$this->parameters = $parameters;
-
-        echo '**********************************************************', "\n";
-        echo '*                                                        *', "\n";
-        echo '*                                                        *', "\n";
-        echo '*                       filter                           *', "\n";
-        echo '*                    setParameters                       *', "\n";
-        echo '*                                                        *', "\n";
-        echo '**********************************************************', "\n";
-
-        print_r(stream_get_meta_data($this->stream));
+		$this->reset()->parameters = $parameters;
 
 		if (isset($parameters['moles']) === false || $parameters['moles'] === true)
 		{
@@ -104,15 +101,6 @@ class filter extends \php_user_filter
 		{
 			$this->rules->merge(new rules\coverage());
 		}
-
-        echo '**********************************************************', "\n";
-        echo '*                                                        *', "\n";
-        echo '*                       ENND                             *', "\n";
-        echo '*                                                        *', "\n";
-        echo '*                       filter                           *', "\n";
-        echo '*                    setParameters                       *', "\n";
-        echo '*                                                        *', "\n";
-        echo '**********************************************************', "\n";
 
 		return $this;
 	}

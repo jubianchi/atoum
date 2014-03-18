@@ -18,7 +18,7 @@ class coverage
 			$scores[$method] = new \SplFixedArray($markerCount);
 			$scoresMethod = & $scores[$method];
 
-			foreach($scoresMethod as $index => $_)
+			foreach ($scoresMethod as $index => $_)
 			{
 				$scoresMethod[$index] = new \ArrayObject(array(
 					static::BUCKET_VALUE => false,

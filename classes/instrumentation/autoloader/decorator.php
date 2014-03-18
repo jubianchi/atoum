@@ -51,8 +51,6 @@ class decorator implements atoum\autoloader\decorator
 			$options = 'options=' . implode(',', $options) . DIRECTORY_SEPARATOR;
 		}
 
-        var_dump(stream::defaultProtocol . stream::protocolSeparator . $options . $path);
-
 		return stream::defaultProtocol . stream::protocolSeparator . $options . $path;
 	}
 

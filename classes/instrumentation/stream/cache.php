@@ -12,7 +12,7 @@ use
 class cache
 {
 	protected $filePath;
-	protected $cacheFile;
+	protected $cacheFile = false;
 	protected $cacheRootDirectory;
 
 	protected static $cacheDirectory = null;
@@ -38,17 +38,22 @@ class cache
 			@mkdir($cacheDir, 0777, true);
 		}
 
-		$this->cacheFile = fopen($cachePath, 'w');
-		flock($this->cacheFile, LOCK_EX);
+		if (($this->cacheFile = fopen($cachePath, 'w')) !== false)
+		{
+			flock($this->cacheFile, LOCK_EX);
+		}
 
 		return $this;
 	}
 
 	public function write($data)
 	{
-		fwrite($this->cacheFile, $data);
-		flock($this->cacheFile, LOCK_UN);
-		fclose($this->cacheFile);
+		if ($this->cacheFileIsSet() === true)
+		{
+			fwrite($this->cacheFile, $data);
+			flock($this->cacheFile, LOCK_UN);
+			fclose($this->cacheFile);
+		}
 
 		return $this;
 	}
@@ -66,6 +71,11 @@ class cache
 	public static function get($path)
 	{
 		return new static(static::getCacheDirectory(), $path);
+	}
+
+	protected function cacheFileIsSet()
+	{
+		is_resource($this->cacheFile);
 	}
 
 	public static function setCacheDirectory($cacheDirectory)

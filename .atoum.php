@@ -1,6 +1,11 @@
 <?php
 
-use mageekguy\atoum;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\instrumentation\stream\cache
+;
+
+cache::setCacheDirectory('/tmp');
 
 $runner
 	->disableXDebugCodeCoverage()

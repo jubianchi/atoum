@@ -73,8 +73,6 @@ class controller
 
 		$this->reset();
 
-		cache::setCacheDirectory('/tmp');
-
 		if (preg_match(static::pathRegex, $path, $matches) > 0)
 		{
 			$path = $matches['resource'];

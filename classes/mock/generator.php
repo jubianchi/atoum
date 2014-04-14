@@ -160,8 +160,6 @@ class generator
 			throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
 		}
 
-		$code = '';
-
 		if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
 		{
 			$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);

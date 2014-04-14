@@ -346,6 +346,7 @@ abstract class test implements observable, \countable
 			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
 			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
 			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
+            ->setHandler('newInstance', function() use ($test) { return call_user_func_array(array($test, 'newTestedInstance'), func_get_args()); })
 			->setPropertyHandler('function', function() use ($test) { return $test->getPhpMocker(); })
 			->setPropertyHandler('exception', function() { return asserters\exception::getLastValue(); })
 		;
@@ -1075,9 +1076,11 @@ abstract class test implements observable, \countable
 				{
 					ob_start();
 
+                    $testedClassName = $this->getTestedClassName();
+
 					try
 					{
-						$testedClass = new \reflectionClass($testedClassName = $this->getTestedClassName());
+						$testedClass = new \reflectionClass($testedClassName);
 					}
 					catch (\exception $exception)
 					{
@@ -1091,13 +1094,6 @@ abstract class test implements observable, \countable
 
 					$this->factoryBuilder->build($testedClass, $instance)
 						->addToAssertionManager($this->assertionManager, 'newTestedInstance', function() use ($testedClass) {
-								throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
-							}
-						)
-					;
-
-					$this->factoryBuilder->build($testedClass)
-						->addToAssertionManager($this->assertionManager, 'newInstance', function() use ($testedClass) {
 								throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
 							}
 						)

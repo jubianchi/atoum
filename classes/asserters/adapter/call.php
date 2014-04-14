@@ -201,7 +201,7 @@ abstract class call extends atoum\asserter
 	{
 		$callsNumber = $this->removeFromManager()->countBeforeAndAfterCalls();
 
-		if ($callsNumber == $number)
+		if ($callsNumber == (int) $number)
 		{
 			$this->pass();
 		}

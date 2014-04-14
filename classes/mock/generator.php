@@ -160,8 +160,6 @@ class generator
 			throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
 		}
 
-		$code = '';
-
 		if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
 		{
 			$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
@@ -181,9 +179,34 @@ class generator
 		return $code;
 	}
 
+    public function getMockClassName($class, $mockNamespace = null, $mockClass = null)
+    {
+        if (trim($class, '\\') == '' || rtrim($class, '\\') != $class)
+        {
+            throw new exceptions\runtime('Class name \'' . $class . '\' is invalid');
+        }
+
+        if ($mockNamespace === null)
+        {
+            $mockNamespace = $this->getNamespace($class);
+        }
+
+        $class = '\\' . ltrim($class, '\\');
+
+        if ($mockClass === null)
+        {
+            $mockClass = self::getClassName($class);
+        }
+
+        return $mockNamespace . '\\' . $mockClass;
+    }
+
 	public function generate($class, $mockNamespace = null, $mockClass = null)
 	{
-		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
+        if (eval('namespace { error_reporting(0); }' . PHP_EOL . $this->getMockedClassCode($class, $mockNamespace, $mockClass) . PHP_EOL . 'namespace { return true; }') === false)
+        {
+            throw new exceptions\logic('Unable to mock class \'' . $class . '\'');
+        }
 
 		$this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = array();
 

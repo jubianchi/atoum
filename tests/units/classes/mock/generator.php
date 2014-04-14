@@ -1262,6 +1262,14 @@ class generator extends atoum\test
 			->then
 				->object($generator->generate('reflectionParameter'))->isIdenticalTo($generator)
 				->boolean($generator->callsToParentClassAreShunted())->isFalse()
+            ->if($generator = new testedClass())
+            ->then
+				->exception(function () use ($generator, $class) {
+						$generator->generate('mageekguy\atoum\mock\controller\iterator');
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Unable to mock class \'' . $class . '\': %s')
 		;
 	}
 

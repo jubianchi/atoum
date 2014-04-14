@@ -346,7 +346,8 @@ abstract class test implements observable, \countable
 			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
 			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
 			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
-            ->setHandler('newInstance', function() use ($test) { return call_user_func_array(array($test, 'newTestedInstance'), func_get_args()); })
+			->setHandler('newInstance', function() use ($test) { return call_user_func_array(array($test, 'newTestedInstance'), func_get_args()); })
+			->setHandler('newMockedInstance', function() use ($test) { return call_user_func_array(array($test, 'newMockedTestedInstance'), func_get_args()); })
 			->setPropertyHandler('function', function() use ($test) { return $test->getPhpMocker(); })
 			->setPropertyHandler('exception', function() { return asserters\exception::getLastValue(); })
 		;
@@ -1076,7 +1077,7 @@ abstract class test implements observable, \countable
 				{
 					ob_start();
 
-                    $testedClassName = $this->getTestedClassName();
+					$testedClassName = $this->getTestedClassName();
 
 					try
 					{
@@ -1087,17 +1088,33 @@ abstract class test implements observable, \countable
 						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 					}
 
-					if ($testedClass->isAbstract() === true)
-					{
-						$testedClass = new \reflectionClass($testedClassName = $mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
-					}
+					$mockedTestedClass = new \reflectionClass($testedClassName = $mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
 
-					$this->factoryBuilder->build($testedClass, $instance)
-						->addToAssertionManager($this->assertionManager, 'newTestedInstance', function() use ($testedClass) {
+					$this->factoryBuilder->build($mockedTestedClass, $instance)
+						->addToAssertionManager($this->assertionManager, 'newMockedTestedInstance', function() use ($testedClass) {
 								throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
 							}
 						)
 					;
+
+					if ($testedClass->isAbstract() === true)
+					{
+						$test = $this;
+
+						$this->assertionManager->setHandler('newTestedInstance', function() use ($test) {
+								return call_user_func_array(array($this, 'newMockedTestedInstance'), func_get_args());
+							}
+						);
+					}
+					else
+					{
+						$this->factoryBuilder->build($testedClass, $instance)
+							->addToAssertionManager($this->assertionManager, 'newTestedInstance', function() use ($testedClass) {
+									throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
+								}
+							)
+						;
+					}
 
 					$this->assertionManager->setPropertyHandler('testedInstance', function() use (& $instance) {
 							if ($instance === null)

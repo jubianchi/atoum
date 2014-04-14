@@ -741,6 +741,9 @@ class generator
 			case 'var':
 			case 'while':
 			case 'xor':
+			case 'getMockController':
+			case 'setMockController':
+			case 'resetMockController':
 				return true;
 
 			default:

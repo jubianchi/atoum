@@ -1102,7 +1102,7 @@ abstract class test implements observable, \countable
 						$test = $this;
 
 						$this->assertionManager->setHandler('newTestedInstance', function() use ($test) {
-								return call_user_func_array(array($this, 'newMockedTestedInstance'), func_get_args());
+								return call_user_func_array(array($test, 'newMockedTestedInstance'), func_get_args());
 							}
 						);
 					}

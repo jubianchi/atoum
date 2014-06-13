@@ -173,7 +173,7 @@ class engine extends atoum\test
 			)
 			->then
 				->exception(function() use ($tagger) {
-						$this->testedInstance->tagVersion(uniqid());
+						$tagger->tagVersion(uniqid());
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')

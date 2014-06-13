@@ -168,8 +168,8 @@ class template extends atoum\test
 				->boolean(isset($this->testedInstance->{$otherChildTag->getTag()}))->isTrue()
 				->string($otherChildTag->getData())->isEmpty()
 			->when(function() use ($template, $childTag, $otherChildTag) {
-					unset($this->testedInstance->{$childTag->getTag()});
-					unset($this->testedInstance->{$otherChildTag->getTag()});
+					unset($template->{$childTag->getTag()});
+					unset($template->{$otherChildTag->getTag()});
 				}
 			)
 			->then

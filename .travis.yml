@@ -21,4 +21,4 @@ before_script:
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s?/path/to/sources/directory?classes? .atoum.php || true"
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s/YouCoverallsProjectToken/$COVERALLS_REPO_TOKEN/ .atoum.php || true"
 script:
-  - bin/atoum -mcn 2 -p "php -n -dzend_extension=$(php -r "echo ini_get('extension_dir');")/xdebug.so -ddate.timezone=Europe/Paris" --test-it
+  - bin/atoum -p "php -n -dzend_extension=$(php -r "echo ini_get('extension_dir');")/xdebug.so -ddate.timezone=Europe/Paris" --test-it

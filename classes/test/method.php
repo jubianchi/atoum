@@ -3,196 +3,196 @@
 namespace mageekguy\atoum\test;
 
 use
-    mageekguy\atoum,
-    mageekguy\atoum\test,
-    mageekguy\atoum\annotations
+	mageekguy\atoum,
+	mageekguy\atoum\test,
+	mageekguy\atoum\annotations
 ;
 
 class method
 {
-    const enginesNamespace = '\mageekguy\atoum\test\engines';
-    const defaultEngine = 'concurrent';
+	const enginesNamespace = '\mageekguy\atoum\test\engines';
+	const defaultEngine = 'concurrent';
 
-    protected $method;
-    protected $phpVersions = array();
-    protected $dataProvider;
-    protected $engineClass;
-    protected $engine;
-    protected $tags = array();
-    protected $ignored = false;
-    protected $void = false;
-    protected $mandatoryExtensions = array();
+	protected $method;
+	protected $phpVersions = array();
+	protected $dataProvider;
+	protected $engineClass;
+	protected $engine;
+	protected $tags = array();
+	protected $ignored = false;
+	protected $void = false;
+	protected $mandatoryExtensions = array();
 
-    public function __construct(\reflectionMethod $method)
-    {
-        $this->method = $method;
+	public function __construct(\reflectionMethod $method)
+	{
+		$this->method = $method;
 
-        $this->setEngineClass();
-    }
+		$this->setEngineClass();
+	}
 
-    public function __toString()
-    {
-        return $this->getName();
-    }
+	public function __toString()
+	{
+		return $this->getName();
+	}
 
-    public function getName()
-    {
-        return $this->method->getName();
-    }
+	public function getName()
+	{
+		return $this->method->getName();
+	}
 
-    public function ignore($ignore = true)
-    {
-        $this->ignored = $ignore;
+	public function ignore($ignore = true)
+	{
+		$this->ignored = $ignore;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function isIgnored()
-    {
-        return $this->ignored;
-    }
+	public function isIgnored()
+	{
+		return $this->ignored;
+	}
 
-    public function void($void = true)
-    {
-        $this->void = $void;
+	public function void($void = true)
+	{
+		$this->void = $void;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function isVoid()
-    {
-        return $this->void;
-    }
+	public function isVoid()
+	{
+		return $this->void;
+	}
 
-    public function addPhpVersion($version, $operator = null)
-    {
-        $this->phpVersions[$version] = $operator ?: '>=';
+	public function addPhpVersion($version, $operator = null)
+	{
+		$this->phpVersions[$version] = $operator ?: '>=';
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getPhpVersions()
-    {
-        return $this->phpVersions;
-    }
+	public function getPhpVersions()
+	{
+		return $this->phpVersions;
+	}
 
-    public function addMandatoryExtension($extension)
-    {
-        $this->mandatoryExtensions[] = $extension;
+	public function addMandatoryExtension($extension)
+	{
+		$this->mandatoryExtensions[] = $extension;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getMandatoryExtensions()
-    {
-        return $this->mandatoryExtensions;
-    }
+	public function getMandatoryExtensions()
+	{
+		return $this->mandatoryExtensions;
+	}
 
-    public function setDataProvider(\reflectionMethod $provider)
-    {
-        $this->dataProvider = $provider;
+	public function setDataProvider(\reflectionMethod $provider)
+	{
+		$this->dataProvider = $provider;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getDataProvider()
-    {
-        return $this->dataProvider;
-    }
+	public function getDataProvider()
+	{
+		return $this->dataProvider;
+	}
 
-    public function needsDataProvider()
-    {
-        return $this->method->getNumberOfParameters() > 0;
-    }
+	public function needsDataProvider()
+	{
+		return $this->method->getNumberOfParameters() > 0;
+	}
 
-    public function setEngineClass($engine = null)
-    {
-        $engine = $engine ?: self::defaultEngine;
+	public function setEngineClass($engine = null)
+	{
+		$engine = $engine ?: self::defaultEngine;
 
-        if (substr($engine, 0, 1) !== '\\')
-        {
-            $engine = self::enginesNamespace . '\\' . $engine;
-        }
+		if (substr($engine, 0, 1) !== '\\')
+		{
+			$engine = self::enginesNamespace . '\\' . $engine;
+		}
 
-        $this->engine = null;
-        $this->engineClass = $engine;
+		$this->engine = null;
+		$this->engineClass = $engine;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getEngineClass()
-    {
-        return $this->engineClass;
-    }
+	public function getEngineClass()
+	{
+		return $this->engineClass;
+	}
 
-    public function setTags(array $tags)
-    {
-        $this->tags = $tags;
+	public function setTags(array $tags)
+	{
+		$this->tags = $tags;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getTags()
-    {
-        return $this->tags;
-    }
+	public function getTags()
+	{
+		return $this->tags;
+	}
 
-    public function hasTags(array $tags)
-    {
-        return sizeof(array_intersect($tags, $this->tags)) > 0;
-    }
+	public function hasTags(array $tags)
+	{
+		return sizeof(array_intersect($tags, $this->tags)) > 0;
+	}
 
-    public function isAsynchronous()
-    {
-        return $this->makeEngine()->engine->isAsynchronous();
-    }
+	public function isAsynchronous()
+	{
+		return $this->makeEngine()->engine->isAsynchronous();
+	}
 
-    public function getScore()
-    {
-        return $this->makeEngine()->engine->getScore();
-    }
+	public function getScore()
+	{
+		return $this->makeEngine()->engine->getScore();
+	}
 
-    public function run(test $test)
-    {
-        $this->makeEngine()->engine->run($test);
+	public function run(test $test)
+	{
+		$this->makeEngine()->engine->run($test);
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function extractAnnotation(atoum\annotations\extractor $extractor = null)
-    {
-        $extractor = $extractor ?: new atoum\annotations\extractor();
+	public function extractAnnotation(atoum\annotations\extractor $extractor = null)
+	{
+		$extractor = $extractor ?: new atoum\annotations\extractor();
 
-        $this->setMethodAnnotations($extractor);
+		$this->setMethodAnnotations($extractor);
 
-        $extractor->extract($this->method->getDocComment());
+		$extractor->extract($this->method->getDocComment());
 
-        return $this;
-    }
+		return $this;
+	}
 
-    protected function makeEngine()
-    {
-        if ($this->engine === null)
-        {
-            $engineClass = $this->getEngineClass();
-            $this->engine = new $engineClass();
+	protected function makeEngine()
+	{
+		if ($this->engine === null)
+		{
+			$engineClass = $this->getEngineClass();
+			$this->engine = new $engineClass();
 
-            if ($this->engine instanceof atoum\test\engine === false)
-            {
-                throw new exceptions\runtime('Test engine \'' . $engineClass . '\' is invalid for method \'' . $this->method->getDeclaringClass() . '::' . $this->method->getName() . '()\'');
-            }
-        }
+			if ($this->engine instanceof atoum\test\engine === false)
+			{
+				throw new exceptions\runtime('Test engine \'' . $engineClass . '\' is invalid for method \'' . $this->method->getDeclaringClass() . '::' . $this->method->getName() . '()\'');
+			}
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    protected function setMethodAnnotations(atoum\annotations\extractor $extractor = null)
+	protected function setMethodAnnotations(atoum\annotations\extractor $extractor = null)
 	{
 		$method = $this;
-        $reflection = $this->method;
-        $extractor = $extractor ?: new atoum\annotations\extractor();
+		$reflection = $this->method;
+		$extractor = $extractor ?: new atoum\annotations\extractor();
 
-        $extractor
+		$extractor
 			->resetHandlers()
 			->setHandler('ignore', function($value) use ($method) { $method->ignore(annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($method) { $method->setTags(annotations\extractor::toArray($value)); })
@@ -227,14 +227,14 @@ class method
 							}
 						}
 
-                        $method->addPhpVersion($version, $operator);
+						$method->addPhpVersion($version, $operator);
 					}
 				}
 			)
 			->setHandler('extensions', function($value) use ($method) {
 					foreach (annotations\extractor::toArray($value) as $mandatoryExtension)
 					{
-                        $method->addMandatoryExtension($mandatoryExtension);
+						$method->addMandatoryExtension($mandatoryExtension);
 					}
 				}
 			)

@@ -107,8 +107,8 @@ abstract class test implements observable, \countable
 		$this->class = $class->getName();
 		$this->classNamespace = $class->getNamespaceName();
 
-        $this->testClass = new test\testClass($class);
-        $this->setTestMethodPrefix(self::defaultMethodPrefix);
+		$this->testClass = new test\testClass($class);
+		$this->setTestMethodPrefix(self::defaultMethodPrefix);
 
 		$annotationExtractor = $annotationExtractor ?: new annotations\extractor();
 
@@ -428,12 +428,12 @@ abstract class test implements observable, \countable
 		{
 			foreach ($this->testClass as $testMethodName => $method)
 			{
-                $versions[$testMethodName] = array_merge($classVersions, $method->getPhpVersions());
+				$versions[$testMethodName] = array_merge($classVersions, $method->getPhpVersions());
 			}
 		}
 		else
 		{
-            $testMethod = $this->testClass->getMethod($methodName);
+			$testMethod = $this->testClass->getMethod($methodName);
 
 			if (sizeof($testMethod->getPhpVersions()) === 0)
 			{
@@ -458,12 +458,12 @@ abstract class test implements observable, \countable
 		{
 			foreach ($this->testClass as $testMethodName => $method)
 			{
-                $extensions[$testMethodName] = array_merge($mandatoryClassExtensions, $method->getMandatoryExtensions());
+				$extensions[$testMethodName] = array_merge($mandatoryClassExtensions, $method->getMandatoryExtensions());
 			}
 		}
 		else
 		{
-            $extensions = array_merge($mandatoryClassExtensions, $this->testClass->getMethod($methodName)->getMandatoryExtensions());
+			$extensions = array_merge($mandatoryClassExtensions, $this->testClass->getMethod($methodName)->getMandatoryExtensions());
 		}
 
 		return $extensions;
@@ -617,14 +617,14 @@ abstract class test implements observable, \countable
 
 		$this->testMethodPrefix = $methodPrefix;
 
-        if (static::isRegex($methodPrefix) === false)
-        {
-            $this->testClass->setMethodFilter(function($methodName) use ($methodPrefix) { return (stripos($methodName, $methodPrefix) === 0); });
-        }
-        else
-        {
-            $this->testClass->setMethodFilter(function($methodName) use ($methodPrefix) { return (preg_match($methodPrefix, $methodName) == true); });
-        }
+		if (static::isRegex($methodPrefix) === false)
+		{
+			$this->testClass->setMethodFilter(function($methodName) use ($methodPrefix) { return (stripos($methodName, $methodPrefix) === 0); });
+		}
+		else
+		{
+			$this->testClass->setMethodFilter(function($methodName) use ($methodPrefix) { return (preg_match($methodPrefix, $methodName) == true); });
+		}
 
 		return $this;
 	}
@@ -704,29 +704,29 @@ abstract class test implements observable, \countable
 
 	public function getTaggedTestMethods(array $methods, array $tags = array())
 	{
-        $taggedMethods = array();
+		$taggedMethods = array();
 
-        foreach ($this->getTestMethods($tags) as $method)
-        {
-            if (sizeof(array_uintersect($methods, array($method->getName()), 'strcasecmp')) > 0)
-            {
-                $taggedMethods[$method->getName()] = $method;
-            }
-        }
+		foreach ($this->getTestMethods($tags) as $method)
+		{
+			if (sizeof(array_uintersect($methods, array($method->getName()), 'strcasecmp')) > 0)
+			{
+				$taggedMethods[$method->getName()] = $method;
+			}
+		}
 
 		return $taggedMethods;
 	}
 
-    public function getTestMethod($methodName)
-    {
-        return $this->testClass->getMethod($methodName);
-    }
+	public function getTestMethod($methodName)
+	{
+		return $this->testClass->getMethod($methodName);
+	}
 
 	public function getTestMethods(array $tags = array())
 	{
 		$testMethods = array();
 
-        foreach ($this->testClass as $methodName => $method)
+		foreach ($this->testClass as $methodName => $method)
 		{
 			if ($this->methodIsIgnored($methodName, $tags) === false)
 			{
@@ -811,7 +811,7 @@ abstract class test implements observable, \countable
 
 		if ($isIgnored === false && sizeof($tags) > 0)
 		{
-            $isIgnored = sizeof($methodTags = $this->testClass->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
+			$isIgnored = sizeof($methodTags = $this->testClass->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
 		}
 
 		return $isIgnored;
@@ -830,11 +830,11 @@ abstract class test implements observable, \countable
 
 		if (sizeof($runTestMethods) <= 0)
 		{
-            $this->runTestMethods = $this->getTestMethods();
+			$this->runTestMethods = $this->getTestMethods();
 		}
 		else
 		{
-            $this->runTestMethods = $this->getTaggedTestMethods($runTestMethods);
+			$this->runTestMethods = $this->getTaggedTestMethods($runTestMethods);
 		}
 
 		return $this;
@@ -842,7 +842,7 @@ abstract class test implements observable, \countable
 
 	public function runTestMethod($testMethodName, array $tags = array())
 	{
-        $testMethod = $this->testClass->getMethod($testMethodName);
+		$testMethod = $this->testClass->getMethod($testMethodName);
 
 		if ($this->methodIsIgnored($testMethod->getName(), $tags) === false)
 		{
@@ -1108,13 +1108,13 @@ abstract class test implements observable, \countable
 		}
 
 		try
-        {
-            $this->testClass->getMethod($testMethodName)->setDataProvider(new \reflectionMethod($this, $dataProvider));
-        }
-        catch(\reflectionException $e)
-        {
-            throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . lcfirst($dataProvider) . '() is unknown');
-        }
+		{
+			$this->testClass->getMethod($testMethodName)->setDataProvider(new \reflectionMethod($this, $dataProvider));
+		}
+		catch(\reflectionException $e)
+		{
+			throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . lcfirst($dataProvider) . '() is unknown');
+		}
 
 
 		return $this;
@@ -1129,7 +1129,7 @@ abstract class test implements observable, \countable
 		{
 			list($file, $line) = $this->getBacktrace();
 
-            $method = $this->currentMethod !== null ? $this->currentMethod->getName() : null;
+			$method = $this->currentMethod !== null ? $this->currentMethod->getName() : null;
 			$this->score->addError($file ?: ($errfile ?: $this->path), $this->class, $method, $line ?: $errline, $errno, trim($errstr), $errfile, $errline);
 
 			$doNotCallDefaultErrorHandler = !($errno & E_RECOVERABLE_ERROR);
@@ -1222,7 +1222,7 @@ abstract class test implements observable, \countable
 	protected function setClassAnnotations(annotations\extractor $extractor)
 	{
 		$test = $this;
-        $class = $this->testClass;
+		$class = $this->testClass;
 
 		$extractor
 			->resetHandlers()
@@ -1268,7 +1268,7 @@ abstract class test implements observable, \countable
 			->setHandler('extensions', function($value) use ($class) {
 					foreach (annotations\extractor::toArray($value) as $mandatoryExtension)
 					{
-                        $class->addMandatoryExtension($mandatoryExtension);
+						$class->addMandatoryExtension($mandatoryExtension);
 					}
 				}
 			)
@@ -1321,7 +1321,7 @@ abstract class test implements observable, \countable
 
 			foreach ($engines as $methodName => $engine)
 			{
-                $this->currentMethod = $this->testClass->getMethod($methodName);
+				$this->currentMethod = $this->testClass->getMethod($methodName);
 				$score = $engine->getScore();
 
 				if ($score !== null)
@@ -1410,7 +1410,7 @@ abstract class test implements observable, \countable
 
 	private function runEngine()
 	{
-        $method = reset($this->runTestMethods);
+		$method = reset($this->runTestMethods);
 
 		if ($method !== false)
 		{
@@ -1436,7 +1436,7 @@ abstract class test implements observable, \countable
 
 	private function canRunMethod(test\method $method)
 	{
-        return ($method->isAsynchronous() === false || $this->maxAsynchronousEngines === null || $this->asynchronousEngines < $this->maxAsynchronousEngines);
+		return ($method->isAsynchronous() === false || $this->maxAsynchronousEngines === null || $this->asynchronousEngines < $this->maxAsynchronousEngines);
 	}
 
 	private function doTearDown()

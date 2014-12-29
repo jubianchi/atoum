@@ -35,7 +35,7 @@ class exception extends \runtimeException
 				}
 			}
 
-            $methodName = $method !== null ? $method->getName() : null;
+			$methodName = $method !== null ? $method->getName() : null;
 			$code = $test->getScore()->addFail($file, $class, $methodName, $line, get_class($asserter) . ($function ? '::' . $function : '') . '()', $message);
 		}
 

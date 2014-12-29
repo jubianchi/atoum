@@ -320,7 +320,7 @@ class runner implements observable
 
 			if ($test->isIgnored($namespaces, $tags) === false)
 			{
-				$methods =  $test->runTestMethods($testMethods, $tags);
+				$methods = $test->runTestMethods($testMethods, $tags);
 
 				if ($methods)
 				{

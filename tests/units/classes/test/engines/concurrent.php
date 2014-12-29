@@ -57,12 +57,12 @@ class concurrent extends atoum\test
 			->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
 			->then
 				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
-            ->if(
-                $this->mockGenerator->shuntParentClassCalls(),
-                $reflection = new \mock\reflectionMethod(uniqid(), $methodName = uniqid()),
-                $this->calling($reflection)->getName = $methodName,
-                $this->calling($test)->getCurrentMethod = $method = new atoum\test\method($reflection)
-            )
+			->if(
+				$this->mockGenerator->shuntParentClassCalls(),
+				$reflection = new \mock\reflectionMethod(uniqid(), $methodName = uniqid()),
+				$this->calling($reflection)->getName = $methodName,
+				$this->calling($test)->getCurrentMethod = $method = new atoum\test\method($reflection)
+			)
 			->and($test->getMockController()->getPath = $testPath = uniqid())
 			->and($test->getMockController()->getPhpPath = $phpPath = uniqid())
 			->and($test->getMockController()->codeCoverageIsEnabled = false)
@@ -109,11 +109,11 @@ class concurrent extends atoum\test
 			->then
 				->variable($engine->getScore())->isNull()
 			->if(
-                $this->mockGenerator->shuntParentClassCalls(),
-                $reflection = new \mock\reflectionMethod(uniqid(), $methodName = uniqid()),
-                $this->calling($reflection)->getName = $methodName,
-                $this->calling($test)->getCurrentMethod = $method = new atoum\test\method($reflection)
-            )
+				$this->mockGenerator->shuntParentClassCalls(),
+				$reflection = new \mock\reflectionMethod(uniqid(), $methodName = uniqid()),
+				$this->calling($reflection)->getName = $methodName,
+				$this->calling($test)->getCurrentMethod = $method = new atoum\test\method($reflection)
+			)
 			->and($this->calling($test)->getPath = $testPath = uniqid())
 			->and($this->calling($test)->getPhpPath = $phpPath = uniqid())
 			->and($this->calling($test)->codeCoverageIsEnabled = false)

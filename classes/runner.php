@@ -320,7 +320,7 @@ class runner implements observable
 
 			if ($test->isIgnored($namespaces, $tags) === false)
 			{
-				$methods =  $test->runTestMethods($testMethods, $tags);
+				$methods = $test->runTestMethods($testMethods, $tags);
 
 				if ($methods)
 				{
@@ -875,38 +875,5 @@ class runner implements observable
 		}
 
 		return $this;
-	}
-
-	private static function getMethods(test $test, array $runTestMethods, array $tags)
-	{
-		$methods = array();
-
-		if (isset($runTestMethods['*']) === true)
-		{
-			$methods = $runTestMethods['*'];
-		}
-
-		$testClass = $test->getClass();
-
-		if (isset($runTestMethods[$testClass]) === true)
-		{
-			$methods = $runTestMethods[$testClass];
-		}
-
-		if (in_array('*', $methods) === true)
-		{
-			$methods = array();
-		}
-
-		if (sizeof($methods) <= 0)
-		{
-			$methods = $test->getTestMethods($tags);
-		}
-		else
-		{
-			$methods = $test->getTaggedTestMethods($methods, $tags);
-		}
-
-		return $methods;
 	}
 }

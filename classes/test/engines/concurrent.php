@@ -135,7 +135,7 @@ class concurrent extends test\engine
 			$phpCode .=
 				'ob_end_clean();' .
 				'mageekguy\atoum\scripts\runner::disableAutorun();' .
-				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());'
+				'echo serialize($test->runTestMethod(\'' . $this->method->getName() . '\')->getScore());'
 			;
 
 			$xdebugConfig = $test->getXdebugConfig();
@@ -172,7 +172,7 @@ class concurrent extends test\engine
 
 			if ($score instanceof atoum\score === false)
 			{
-				$score = call_user_func($this->scoreFactory)->addUncompletedMethod($this->test->getPath(), $this->test->getClass(), $this->method,  $this->php->getExitCode(), $this->php->getStdOut());
+				$score = call_user_func($this->scoreFactory)->addUncompletedMethod($this->test->getPath(), $this->test->getClass(), $this->method->getName(), $this->php->getExitCode(), $this->php->getStdOut());
 			}
 
 			$stdErr = $this->php->getStderr();
@@ -181,11 +181,11 @@ class concurrent extends test\engine
 			{
 				if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($stdErr), $errors, PREG_SET_ORDER) === 0)
 				{
-					$score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, 'UNKNOWN', $stdErr);
+					$score->addError($this->test->getPath(), $this->test->getClass(), $this->method->getName(), null, 'UNKNOWN', $stdErr);
 				}
 				else foreach ($errors as $error)
 				{
-					$score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, $error[1], $error[2], $error[3], $error[4]);
+					$score->addError($this->test->getPath(), $this->test->getClass(), $this->method->getName(), null, $error[1], $error[2], $error[3], $error[4]);
 				}
 			}
 		}

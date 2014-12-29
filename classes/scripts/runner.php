@@ -1263,7 +1263,7 @@ class runner extends atoum\script\configurable
 
 	private function getClassesOf($methods)
 	{
-		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
+		return sizeof($methods) <= 0 ? array() : array_keys($methods);
 	}
 
 	private function copy($from, $to)

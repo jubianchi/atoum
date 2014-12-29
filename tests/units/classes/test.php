@@ -99,7 +99,6 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
 					->array($test->getTags())->isEqualTo($tags)
 					->array($test->getMethodTags())->isEmpty()
-					->array($test->getDataProviders())->isEmpty()
 					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
 					->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
@@ -591,14 +590,14 @@ namespace mageekguy\atoum\tests\units
 					->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
 					->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
 					->sizeOf($test)->isEqualTo(2)
-					->array($test->getTestMethods())->isEqualTo(array('testMethod1', 'testMethod2'))
-					->array($test->getTestMethods(array('method')))->isEqualTo(array('testMethod1', 'testMethod2'))
-					->array($test->getTestMethods(array('test')))->isEqualTo(array('testMethod1', 'testMethod2'))
-					->array($test->getTestMethods(array('two')))->isEqualTo(array('testMethod2'))
+					->array($test->getTestMethods())->isEqualTo(array('testMethod1' => $test->getTestMethod('testMethod1'), 'testMethod2' => $test->getTestMethod('testMethod2')))
+					->array($test->getTestMethods(array('method')))->isEqualTo(array('testMethod1' => $test->getTestMethod('testMethod1'), 'testMethod2' => $test->getTestMethod('testMethod2')))
+					->array($test->getTestMethods(array('test')))->isEqualTo(array('testMethod1' => $test->getTestMethod('testMethod1'), 'testMethod2' => $test->getTestMethod('testMethod2')))
+					->array($test->getTestMethods(array('two')))->isEqualTo(array('testMethod2' => $test->getTestMethod('testMethod2')))
 					->array($test->getTestMethods(array(uniqid())))->isEmpty()
-					->array($test->getTestMethods(array('test', 'method')))->isEqualTo(array('testMethod1', 'testMethod2'))
-					->array($test->getTestMethods(array('test', 'method', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
-					->array($test->getTestMethods(array('test', 'method', 'two', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
+					->array($test->getTestMethods(array('test', 'method')))->isEqualTo(array('testMethod1' => $test->getTestMethod('testMethod1'), 'testMethod2' => $test->getTestMethod('testMethod2')))
+					->array($test->getTestMethods(array('test', 'method', uniqid())))->isEqualTo(array('testMethod1' => $test->getTestMethod('testMethod1'), 'testMethod2' => $test->getTestMethod('testMethod2')))
+					->array($test->getTestMethods(array('test', 'method', 'two', uniqid())))->isEqualTo(array('testMethod1' => $test->getTestMethod('testMethod1'), 'testMethod2' => $test->getTestMethod('testMethod2')))
 			;
 		}
 
@@ -850,34 +849,16 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEmpty()
 				->if($test->ignore(false))
 				->then
-					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEqualTo(array('testMethod1'))
-					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod2', uniqid())))->isEqualTo(array('testMethod2'))
-					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('Testmethod1', 'Testmethod2'))
-					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'), array('one')))->isEqualTo(array('Testmethod1'))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEqualTo(array('testMethod1' => $test->getTestMethod('testMethod1')))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod2', uniqid())))->isEqualTo(array('testMethod2' => $test->getTestMethod('testMethod2')))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('testMethod1' => $test->getTestMethod('testMethod1'), 'testMethod2' => $test->getTestMethod('testMethod2')))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'), array('one')))->isEqualTo(array('testMethod1' => $test->getTestMethod('testMethod1')))
 				->if($test->ignoreMethod('testMethod1', true))
 				->then
 					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEmpty()
-					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod2', uniqid())))->isEqualTo(array('testMethod2'))
-					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('Testmethod2'))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod2', uniqid())))->isEqualTo(array('testMethod2' => $test->getTestMethod('testMethod2')))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('testMethod2' => $test->getTestMethod('testMethod2')))
 					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'), array('one')))->isEmpty()
-			;
-		}
-
-		public function testSetDataProvider()
-		{
-			$this
-				->if($test = new emptyTest())
-				->then
-					->exception(function() use ($test, & $method) { $test->setDataProvider($method = uniqid(), uniqid()); })
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
-				->if($test = new notEmptyTest())
-				->then
-					->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod1', $dataProvider = uniqid()); })
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Data provider ' . get_class($test) . '::' . $dataProvider . '() is unknown')
-					->object($test->setDataProvider('testMethod1', 'aDataProvider'))->isIdenticalTo($test)
-					->array($test->getDataProviders())->isEqualTo(array('testMethod1' => 'aDataProvider'))
 			;
 		}
 

@@ -57,7 +57,12 @@ class concurrent extends atoum\test
 			->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
 			->then
 				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
-			->if($test->getMockController()->getCurrentMethod = $method = uniqid())
+			->if(
+				$this->mockGenerator->shuntParentClassCalls(),
+				$reflection = new \mock\reflectionMethod(uniqid(), $methodName = uniqid()),
+				$this->calling($reflection)->getName = $methodName,
+				$this->calling($test)->getCurrentMethod = $method = new atoum\test\method($reflection)
+			)
 			->and($test->getMockController()->getPath = $testPath = uniqid())
 			->and($test->getMockController()->getPhpPath = $phpPath = uniqid())
 			->and($test->getMockController()->codeCoverageIsEnabled = false)
@@ -84,7 +89,7 @@ class concurrent extends atoum\test
 						'$test->disableCodeCoverage();' .
 						'ob_end_clean();' .
 						'mageekguy\atoum\scripts\runner::disableAutorun();' .
-						'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
+						'echo serialize($test->runTestMethod(\'' . $methodName . '\')->getScore());'
 					)->twice()
 					->call('__set')->withArguments('XDEBUG_CONFIG', $xdebugConfig)->twice()
 		;
@@ -103,7 +108,12 @@ class concurrent extends atoum\test
 			->and($this->calling($php)->isRunning = true)
 			->then
 				->variable($engine->getScore())->isNull()
-			->if( $this->calling($test)->getCurrentMethod = $method = uniqid())
+			->if(
+				$this->mockGenerator->shuntParentClassCalls(),
+				$reflection = new \mock\reflectionMethod(uniqid(), $methodName = uniqid()),
+				$this->calling($reflection)->getName = $methodName,
+				$this->calling($test)->getCurrentMethod = $method = new atoum\test\method($reflection)
+			)
 			->and($this->calling($test)->getPath = $testPath = uniqid())
 			->and($this->calling($test)->getPhpPath = $phpPath = uniqid())
 			->and($this->calling($test)->codeCoverageIsEnabled = false)
@@ -114,7 +124,7 @@ class concurrent extends atoum\test
 			->and($engine->run($test))
 			->then
 				->object($score = $engine->getScore())->isInstanceOf('mageekguy\atoum\score')
-				->array($score->getUncompletedMethods())->isEqualTo(array(array('file' => $testPath, 'class' => get_class($test), 'method' => $method, 'exitCode' => $exitCode, 'output' => $output)))
+				->array($score->getUncompletedMethods())->isEqualTo(array(array('file' => $testPath, 'class' => get_class($test), 'method' => $methodName, 'exitCode' => $exitCode, 'output' => $output)))
 			->if($this->calling($php)->getStdOut = serialize($score))
 			->and($engine->run($test))
 			->then

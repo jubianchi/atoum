@@ -10,7 +10,7 @@ use
 
 class method
 {
-    const enginesNamespace = 'mageekguy\atoum\test\engines';
+    const enginesNamespace = '\mageekguy\atoum\test\engines';
     const defaultEngine = 'concurrent';
 
     protected $method;
@@ -22,16 +22,12 @@ class method
     protected $ignored = false;
     protected $void = false;
     protected $mandatoryExtensions = array();
-    protected $annotationExtractor;
 
-    public function __construct(\reflectionMethod $method, atoum\annotations\extractor $extractor = null)
+    public function __construct(\reflectionMethod $method)
     {
         $this->method = $method;
 
-        $this
-            ->setEngineClass()
-            ->setAnnotationExtractor($extractor)
-        ;
+        $this->setEngineClass();
     }
 
     public function __toString()
@@ -104,6 +100,11 @@ class method
         return $this->dataProvider;
     }
 
+    public function needsDataProvider()
+    {
+        return $this->method->getNumberOfParameters() > 0;
+    }
+
     public function setEngineClass($engine = null)
     {
         $engine = $engine ?: self::defaultEngine;
@@ -158,13 +159,13 @@ class method
         return $this;
     }
 
-    public function setAnnotationExtractor(atoum\annotations\extractor $extractor = null)
+    public function extractAnnotation(atoum\annotations\extractor $extractor = null)
     {
-        $this->annotationExtractor = $extractor ?: new atoum\annotations\extractor();
+        $extractor = $extractor ?: new atoum\annotations\extractor();
 
-        $this->setMethodAnnotations();
+        $this->setMethodAnnotations($extractor);
 
-        $this->annotationExtractor->extract($this->method->getDocComment());
+        $extractor->extract($this->method->getDocComment());
 
         return $this;
     }
@@ -185,12 +186,13 @@ class method
         return $this;
     }
 
-    protected function setMethodAnnotations()
+    protected function setMethodAnnotations(atoum\annotations\extractor $extractor = null)
 	{
 		$method = $this;
         $reflection = $this->method;
+        $extractor = $extractor ?: new atoum\annotations\extractor();
 
-		$this->annotationExtractor
+        $extractor
 			->resetHandlers()
 			->setHandler('ignore', function($value) use ($method) { $method->ignore(annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($method) { $method->setTags(annotations\extractor::toArray($value)); })

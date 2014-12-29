@@ -8,9 +8,6 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
-/**
- * @engine inline
- */
 class method extends atoum\test
 {
     public function testClass()
@@ -30,7 +27,7 @@ class method extends atoum\test
             )
             ->then
                 ->object($this->newTestedInstance($method))
-                ->string($this->testedInstance->getEngineClass())->isEqualTo('mageekguy\atoum\test\engines\concurrent')
+                ->string($this->testedInstance->getEngineClass())->isEqualTo('\mageekguy\atoum\test\engines\concurrent')
                 ->boolean($this->testedInstance->isIgnored())->isFalse
         ;
     }
@@ -104,9 +101,9 @@ class method extends atoum\test
                 $this->newTestedInstance($method)
             )
             ->then
-                ->string($this->testedInstance->getEngineClass())->isEqualTo('mageekguy\atoum\test\engines\concurrent')
+                ->string($this->testedInstance->getEngineClass())->isEqualTo('\mageekguy\atoum\test\engines\concurrent')
                 ->object($this->testedInstance->setEngineClass($engine = uniqid()))->isTestedInstance
-                ->string($this->testedInstance->getEngineClass())->isEqualTo('mageekguy\atoum\test\engines\\' . $engine)
+                ->string($this->testedInstance->getEngineClass())->isEqualTo('\mageekguy\atoum\test\engines\\' . $engine)
         ;
     }
 

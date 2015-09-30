@@ -24,12 +24,13 @@ before_script:
 script:
   - php ./scripts/runner.php --test-it
 before_deploy:
-  - php -dphar.readonly=Off scripts/phar/generator.php -d .
+  - mkdir deploy
+  - php -dphar.readonly=Off scripts/phar/generator.php -d ./deploy
 deploy:
   provider: releases
   api_key:
     secure: EX0DcpGYniUKg4IYOlEN4cFc6kthfTG3D5KnscwccuIb/szE4QDuLyjF61jpjUI22OZMVzYWbfbc80d03lYkPkUCv/n9Teaq3m/20eErDWwa4PXfMc5IXsiWi7AivCgUbbM6pG9kOyJgwif4fmDyVcn+R44eHcIZiORaEHPwX8M=
-  file: atoum.phar
+  file: deploy/atoum.phar
   skip_cleanup: true
   on:
     tags: true

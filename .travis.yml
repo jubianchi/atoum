@@ -28,7 +28,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: lmt12noTXqP/X7a71FffP/lIJR+9sX6vrE7gIdTHroMqfxh2x3u8w1NBs3+npa9lq00Fi2UZiWJY7BurdsTokM75ZqXZAjlC42KCZGLiXKMQZcei5nOdKhKWZ06FSVMFlxf6dhknsMgJjeNmDGVSXhDnN2ZuPnf68may/o/nLaA=
+    secure: EX0DcpGYniUKg4IYOlEN4cFc6kthfTG3D5KnscwccuIb/szE4QDuLyjF61jpjUI22OZMVzYWbfbc80d03lYkPkUCv/n9Teaq3m/20eErDWwa4PXfMc5IXsiWi7AivCgUbbM6pG9kOyJgwif4fmDyVcn+R44eHcIZiORaEHPwX8M=
   file: atoum.phar
   skip_cleanup: true
   on:

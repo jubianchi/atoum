@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\php\mocker;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\php\mocker
 ;
@@ -73,6 +74,13 @@ class funktion extends mocker
 	public function resetCalls($functionName = null)
 	{
 		static::$adapter->resetCalls($this->getFqdn($functionName));
+
+		return $this;
+	}
+
+	function addToTest(atoum\test $test)
+	{
+		$test->setPhpFunctionMocker($this);
 
 		return $this;
 	}

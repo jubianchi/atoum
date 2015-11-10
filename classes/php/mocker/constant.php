@@ -2,6 +2,7 @@
 
 namespace mageekguy\atoum\php\mocker;
 
+use mageekguy\atoum;
 use mageekguy\atoum\php\mocker;
 
 class constant extends mocker
@@ -26,5 +27,12 @@ class constant extends mocker
 	public function __unset($constantName)
 	{
 		return;
+	}
+
+	function addToTest(atoum\test $test)
+	{
+		$test->setPhpConstantMocker($this);
+
+		return $this;
 	}
 }

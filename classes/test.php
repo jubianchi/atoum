@@ -282,6 +282,15 @@ abstract class test implements observable, \countable
 		return $this->adapter;
 	}
 
+	public function setPhpMocker(php\mocker $phpMocker = null)
+	{
+		$phpMocker = $phpMocker ?: new php\mocker();
+
+		$phpMocker->addToTest($this);
+
+		return $this;
+	}
+
 	public function setPhpFunctionMocker(php\mocker\funktion $phpFunctionMocker = null)
 	{
 		$this->phpFunctionMocker = $phpFunctionMocker ?: new php\mocker\funktion();

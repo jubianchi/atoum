@@ -40,6 +40,7 @@ class funktion extends mocker
 	public function setReflectedFunctionFactory(\closure $factory = null)
 	{
 		$this->reflectedFunctionFactory = $factory ?: function($functionName) { return new \reflectionFunction($functionName); };
+
 		return $this;
 	}
 

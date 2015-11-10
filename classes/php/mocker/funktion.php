@@ -66,6 +66,7 @@ class funktion extends mocker
 			$reflectedFunction = $this->buildReflectedFunction($function);
 			static::defineMockedFunction($namespace, get_class($this), $function, $reflectedFunction);
 		}
+
 		return $this->setDefaultBehavior($fqdn);
 	}
 

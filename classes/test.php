@@ -406,8 +406,8 @@ abstract class test implements observable, \countable
 			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
 			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
 			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
-            ->setPropertyHandler('function', function() use ($test) { return $this->getPhpFunctionMocker(); })
-            ->setPropertyHandler('constant', function() use ($test) { return $this->getPhpConstantMocker(); })
+			->setPropertyHandler('function', function() use ($test) { return $this->getPhpFunctionMocker(); })
+			->setPropertyHandler('constant', function() use ($test) { return $this->getPhpConstantMocker(); })
 			->setPropertyHandler('exception', function() { return asserters\exception::getLastValue(); })
 		;
 

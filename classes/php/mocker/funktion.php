@@ -52,12 +52,14 @@ class funktion extends mocker
 	public function generate($functionName)
 	{
 		$fqdn = $this->getFqdn($functionName);
+
 		if ($this->functionExists($fqdn) === false)
 		{
 			if (function_exists($fqdn) === true)
 			{
 				throw new exceptions\logic\invalidArgument('Function \'' . $fqdn . '\' already exists');
 			}
+
 			$lastAntislash = strrpos($fqdn, '\\');
 			$namespace = substr($fqdn, 0, $lastAntislash);
 			$function = substr($fqdn, $lastAntislash + 1);
@@ -70,6 +72,7 @@ class funktion extends mocker
 	public function resetCalls($functionName = null)
 	{
 		static::$adapter->resetCalls($this->getFqdn($functionName));
+
 		return $this;
 	}
 
@@ -84,16 +87,19 @@ class funktion extends mocker
 		{
 			$this->generate($functionName);
 		}
+
 		return $this->getFqdn($functionName);
 	}
 
 	protected function setDefaultBehavior($fqdn, \reflectionFunction $reflectedFunction = null)
 	{
 		$function = substr($fqdn, strrpos($fqdn, '\\') + 1);
+
 		if ($reflectedFunction === null)
 		{
 			$reflectedFunction = $this->buildReflectedFunction($function);
 		}
+
 		if ($reflectedFunction === null)
 		{
 			$closure = function() { return null; };
@@ -102,7 +108,9 @@ class funktion extends mocker
 		{
 			$closure = eval('return function(' . static::getParametersSignature($reflectedFunction) . ') { return call_user_func_array(\'\\' . $function . '\', ' . static::getParameters($reflectedFunction) . '); };');
 		}
+
 		static::$adapter->{$fqdn}->setClosure($closure);
+
 		return $this;
 	}
 
@@ -114,9 +122,11 @@ class funktion extends mocker
 	protected static function getParametersSignature(\reflectionFunction $function)
 	{
 		$parameters = array();
+
 		foreach (self::filterParameters($function) as $parameter)
 		{
 			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
+
 			switch (true)
 			{
 				case $parameter->isDefaultValueAvailable():
@@ -125,18 +135,22 @@ class funktion extends mocker
 				case $parameter->isOptional():
 					$parameterCode .= ' = null';
 			}
+
 			$parameters[] = $parameterCode;
 		}
+
 		return join(', ', $parameters);
 	}
 
 	protected static function getParameters(\reflectionFunction $function)
 	{
 		$parameters = array();
+
 		foreach (self::filterParameters($function) as $parameter)
 		{
 			$parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
 		}
+
 		return 'array(' . join(',', $parameters) . ')';
 	}
 
@@ -146,10 +160,13 @@ class funktion extends mocker
 		{
 			case $parameter->isArray():
 				return 'array ';
+
 			case method_exists($parameter, 'isCallable') && $parameter->isCallable():
 				return 'callable ';
+
 			case ($class = $parameter->getClass()):
 				return '\\' . $class->getName() . ' ';
+
 			default:
 				return '';
 		}
@@ -170,11 +187,13 @@ class funktion extends mocker
 	private function buildReflectedFunction($function)
 	{
 		$reflectedFunction = null;
+
 		try
 		{
 			$reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
 		}
 		catch (\exception $exception) {}
+
 		return $reflectedFunction;
 	}
 

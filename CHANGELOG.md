@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#516](https://github.com/atoum/atoum/pull/516) Add a "callStaticOnTestedClass" method ([@mikaelrandy])
+
 # 2.3.0
 
 * [#501](https://github.com/atoum/atoum/pull/501) Add atoum path and version to default CLI report ([@jubianchi])

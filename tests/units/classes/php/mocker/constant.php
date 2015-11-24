@@ -17,7 +17,7 @@ class constant extends atoum\test
 			->given(
 				$this->newTestedInstance,
 				$adapter = new atoum\test\adapter(),
-				php\mocker::setAdapter($adapter)
+				php\mocker\constant::setAdapter($adapter)
 			)
 
 			->if(
@@ -48,7 +48,7 @@ class constant extends atoum\test
 			->given(
 				$this->newTestedInstance,
 				$adapter = new atoum\test\adapter(),
-				php\mocker::setAdapter($adapter)
+				php\mocker\constant::setAdapter($adapter)
 			)
 
 			->if(
@@ -56,7 +56,7 @@ class constant extends atoum\test
 				$this->testedInstance->setDefaultNameSpace($namespace = uniqid())
 			)
 			->then
-				->exception(function(atoum\test $test) use (& $constant, & $value) {
+				->exception(function(atoum\test $test) use (& $constant) {
 						$test->testedInstance->{$constant = uniqid()};
 					}
 				)
@@ -83,7 +83,7 @@ class constant extends atoum\test
 			->given(
 				$this->newTestedInstance,
 				$adapter = new atoum\test\adapter(),
-				php\mocker::setAdapter($adapter)
+				php\mocker\constant::setAdapter($adapter)
 			)
 
 			->if(

@@ -18,7 +18,7 @@ class phpResource extends atoum\test
 		$this->testedClass->extends('mageekguy\atoum\asserters\variable');
 	}
 
-	public function test__construct()
+	public function test__construct(asserter\generator $generator, variable\analyzer $analyzer, atoum\locale $locale)
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -29,7 +29,7 @@ class phpResource extends atoum\test
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()
 
-			->given($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer(), $locale = new atoum\locale()))
+			->given($this->newTestedInstance($generator, $analyzer, $locale))
 			->then
 				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
 				->object($this->testedInstance->getAnalyzer())->isIdenticalTo($analyzer)
@@ -57,7 +57,7 @@ class phpResource extends atoum\test
 						->once
 				->string($asserter->getValue())->isEqualTo($value)
 
-				->object($asserter->setWith($value = fopen(__FILE__, 'r')))->isIdenticalTo($asserter)
+				->object($asserter->setWith($value = fopen(atoum\mock\streams\fs\file::get(), 'r')))->isIdenticalTo($asserter)
 				->resource($asserter->getValue())->isEqualTo($value)
 		;
 	}
@@ -67,13 +67,13 @@ class phpResource extends atoum\test
 		$this
 			->given($asserter = $this->newTestedInstance)
 
-			->if($asserter->setWith(fopen(__FILE__, 'r')))
+			->if($asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')))
 			->then
 				->object($asserter->isOfType('stream'))->isIdenticalTo($asserter)
 
 			->if(
 				$asserter
-					->setWith($value = fopen(__FILE__, 'r'))
+					->setWith($value = fopen(atoum\mock\streams\fs\file::get(), 'r'))
 					->setLocale($locale = new \mock\atoum\locale())
 					->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
 				$this->calling($locale)->_ = $notAResource = uniqid(),

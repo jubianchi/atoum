@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\reports\realtime;
+namespace mageekguy\atoum\reports\realtime\cli;
 
 use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\cli\prompt;
@@ -8,10 +8,8 @@ use mageekguy\atoum\report\fields\runner;
 use mageekguy\atoum\report\fields\test;
 use mageekguy\atoum\reports\realtime;
 
-class cli extends realtime
+class travis extends realtime
 {
-    protected $runnerTestsCoverageField = false;
-
     public function __construct()
     {
         parent::__construct();
@@ -193,6 +191,8 @@ class cli extends realtime
 
         $this->addField($runnerSkippedField);
 
+        $this->addField(new \mageekguy\atoum\report\fields\test\travisStart());
+
         $testRunField = new test\run\cli();
         $testRunField
             ->setPrompt($firstLevelPrompt)
@@ -216,19 +216,7 @@ class cli extends realtime
         ;
 
         $this->addField($testMemoryField);
-    }
 
-    public function hideClassesCoverageDetails()
-    {
-        $this->runnerTestsCoverageField->hideClassesCoverageDetails();
-
-        return $this;
-    }
-
-    public function hideMethodsCoverageDetails()
-    {
-        $this->runnerTestsCoverageField->hideMethodsCoverageDetails();
-
-        return $this;
+        $this->addField(new \mageekguy\atoum\report\fields\test\travisStop());
     }
 }

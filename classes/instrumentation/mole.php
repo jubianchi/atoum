@@ -1,6 +1,6 @@
 <?php
 
-namespace atoum\instrumentation;
+namespace mageekguy\atoum\instrumentation;
 
 class mole
 {

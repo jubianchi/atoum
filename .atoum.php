@@ -5,12 +5,12 @@ use
 	mageekguy\atoum\instrumentation\stream\cache
 ;
 
-cache::setCacheDirectory('/tmp');
+cache::setCacheDirectory(__DIR__ . '/cache');
 
 $runner
 	->disableXDebugCodeCoverage()
 	->enableInstrumentation()
-		->disableMoleInstrumentation()
+	//	->disableMoleInstrumentation()
 	//	->disableCoverageInstrumentation()
 ;
 

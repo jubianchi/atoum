@@ -71,7 +71,8 @@ class concurrent extends test\engine
 
 			if ($this->test->instrumentationIsEnabled() === true)
 			{
-				$phpCode .=
+			    $phpCode .=
+                    'atoum\instrumentation\stream\cache::setCacheDirectory(\'' . atoum\instrumentation\stream\cache::getCacheDirectory() . '\');' .
 					'mageekguy\atoum\instrumentation\stream::set();' .
 					'$instrumentation = new mageekguy\atoum\instrumentation\autoloader\decorator();'
 				;

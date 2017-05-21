@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\instrumentation;
 
 use
-	mageekguy\atoum\adapter,
 	mageekguy\atoum\exceptions\logic,
 	mageekguy\atoum\exceptions\runtime
 ;
@@ -19,7 +18,6 @@ class stream
 	protected $streamFilter = null;
 
 	protected static $controller = null;
-	protected static $adapter = null;
 
 	public function __call($method, array $arguments)
 	{
@@ -78,16 +76,6 @@ class stream
 		}
 	}
 
-	public static function getAdapter()
-	{
-		return (static::$adapter = static::$adapter ?: new adapter());
-	}
-
-	public static function setAdapter(adapter $adapter)
-	{
-		static::$adapter = $adapter;
-	}
-
 	public static function getController()
 	{
 		return (static::$controller = static::$controller ?: new stream\controller());
@@ -112,14 +100,12 @@ class stream
 
 	public static function set()
 	{
-		$adapter = static::getAdapter();
-
-		if (in_array(static::defaultProtocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register(static::defaultProtocol, get_called_class(), 0) === false)
+		if (in_array(static::defaultProtocol, stream_get_wrappers()) === false && stream_wrapper_register(static::defaultProtocol, get_called_class(), 0) === false)
 		{
 			throw new runtime('Unable to register ' . static::defaultProtocol . ' stream');
 		}
 
-		if (in_array(static::defaultProtocol, $adapter->stream_get_filters()) === false && $adapter->stream_filter_register(static::defaultProtocol, get_called_class()) === false)
+		if (in_array(static::defaultProtocol, stream_get_filters()) === false && stream_filter_register(static::defaultProtocol, get_called_class()) === false)
 		{
 			throw new runtime('Unable to register ' . static::defaultProtocol . ' filter');
 		}

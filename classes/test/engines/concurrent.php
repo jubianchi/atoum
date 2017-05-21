@@ -82,7 +82,7 @@ class concurrent extends test\engine
 					$phpCode .= '$instrumentation->disableMoleInstrumentation();';
 				}
 
-				if ($this->test->coverageInstrumentationIsEnabled() === false)
+				if ($this->test->coverageInstrumentationIsEnabled() === false || $this->test->codeCoverageIsEnabled() === false)
 				{
 					$phpCode .= '$instrumentation->disableCoverageInstrumentation();';
 				}
@@ -123,7 +123,7 @@ class concurrent extends test\engine
 					$phpCode .= '$test->disableCoverageInstrumentation();';
 				}
 			}
-			
+
 			if ($this->test->debugModeIsEnabled() === true)
 			{
 				$phpCode .= '$test->enableDebugMode();';

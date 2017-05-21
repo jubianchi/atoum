@@ -22,7 +22,11 @@ class coverage extends score\coverage
 
 				if (isset($this->classes[$reflectedClassName]) === false)
 				{
-					$this->classes[$reflectedClassName] = $reflectedClass->getFileName();
+					$this->classes[$reflectedClassName] = preg_replace(
+					    '#^' . atoum\instrumentation\stream::defaultProtocol . atoum\instrumentation\stream::protocolSeparator . '[^/]*#',
+                        '',
+					    $reflectedClass->getFileName()
+                    );
 					$this->methods[$reflectedClassName] = array();
 
 					foreach ($reflectedClass->getMethods() as $method)
@@ -38,7 +42,11 @@ class coverage extends score\coverage
 
 								if (isset($this->classes[$declaringClassName]) === false)
 								{
-									$this->classes[$declaringClassName] = $declaringClassFile;
+									$this->classes[$declaringClassName] = preg_replace(
+                                        '#^' . atoum\instrumentation\stream::defaultProtocol . atoum\instrumentation\stream::protocolSeparator . '[^/]*#',
+                                        '',
+                                        $declaringClassFile
+                                    );
 									$this->methods[$declaringClassName] = array();
 								}
 
@@ -48,7 +56,7 @@ class coverage extends score\coverage
 								{
 									foreach ($data[$id] as $index => $bucket)
 									{
-										$this->methods[$declaringClassName][$method->getName()][$index] = $bucket[atoum\instrumentation\coverage::BUCKET_VALUE];
+									    $this->methods[$declaringClassName][$method->getName()][$bucket[atoum\instrumentation\coverage::BUCKET_LINE]] = (int) $bucket[atoum\instrumentation\coverage::BUCKET_VALUE];
 									}
 								}
 							}
@@ -90,7 +98,7 @@ class coverage extends score\coverage
 
 					foreach ($data as $index => $covered)
 					{
-						$this->methods[$class][$method][$index] = (isset($this->methods[$class][$method][$index]) ? $this->methods[$class][$method][$index] : false) || $covered;
+						$this->methods[$class][$method][$index] = (int) ((isset($this->methods[$class][$method][$index]) ? $this->methods[$class][$method][$index] : false) || $covered);
 					}
 				}
 			}

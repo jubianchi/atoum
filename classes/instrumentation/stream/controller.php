@@ -12,26 +12,8 @@ class controller
 	const pathRegex = '#^(?:options=(?<options>[^/]*)/)?(?:resource=)?(?<resource>[^$]+)$#';
 	const optionsRegex = '#(?<flag>[+\-])?(?<name>[\w\-]+)#';
 
-	protected $adapter;
 	protected $stream;
 	protected $streamName;
-
-	public function __construct(atoum\adapter $adapter = null)
-	{
-		$this->setAdapter($adapter);
-	}
-
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
 
 	public function getStream()
 	{
@@ -89,40 +71,40 @@ class controller
 				$cache->lock();
 			}
 
-			$stream = $this->adapter->fopen($path, $mode, $options & STREAM_USE_PATH);
+			$stream = fopen($path, $mode, $options & STREAM_USE_PATH);
 
-			if ($this->adapter->is_resource($stream))
+			if (is_resource($stream))
 			{
 				$openedPath = $this->stream = $stream;
 				$this->streamName = $path;
 
 				if ($cacheUsed === false)
 				{
-					$this->adapter->stream_filter_append(
+					stream_filter_append(
 						$stream,
 						atoum\instrumentation\stream::defaultProtocol,
 						STREAM_FILTER_READ,
 						static::parseOptions($matches['options'])
 					);
 
-					$data = $this->adapter->stream_get_contents($stream);
-					$this->adapter->fseek($stream, 0);
+					$data = stream_get_contents($stream);
+					fseek($stream, 0);
 
 					$cache->write($data);
 				}
 
-				while ($this->adapter->flock($stream, LOCK_SH) === false);
+				while (flock($stream, LOCK_SH) === false);
 			}
 		}
 
-		return $this->adapter->is_resource($this->stream) ? $this->stream : false;
+		return is_resource($this->stream) ? $this->stream : false;
 	}
 
 	public function stream_read($count)
 	{
 		try
 		{
-			return $this->adapter->fread($this->streamIsSet()->stream, $count);
+			return fread($this->streamIsSet()->stream, $count);
 		}
 		catch (exceptions\runtime $exception)
 		{
@@ -134,7 +116,7 @@ class controller
 	{
 		try
 		{
-			return 0 === $this->adapter->fseek($this->streamIsSet()->stream, $offset, $whence);
+			return 0 === fseek($this->streamIsSet()->stream, $offset, $whence);
 		}
 		catch (exceptions\runtime $exception)
 		{
@@ -146,7 +128,7 @@ class controller
 	{
 		try
 		{
-			return $this->adapter->fstat($this->streamIsSet()->stream);
+			return fstat($this->streamIsSet()->stream);
 		}
 		catch (exceptions\runtime $exception)
 		{
@@ -158,7 +140,7 @@ class controller
 	{
 		try
 		{
-			return $this->adapter->ftell($this->streamIsSet()->stream);
+			return ftell($this->streamIsSet()->stream);
 		}
 		catch (exceptions\runtime $exception)
 		{
@@ -170,10 +152,10 @@ class controller
 
 		if ($flags & STREAM_URL_STAT_LINK)
 		{
-			return @$this->adapter->lstat($path);
+			return @lstat($path);
 		}
 
-		return @$this->adapter->stat($path);
+		return @stat($path);
 	}
 
 	protected function streamIsSet()
